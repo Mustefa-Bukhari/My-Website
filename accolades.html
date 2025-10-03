@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Accolades</title>
+  <style>
+    .responsive-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 1em;
+      min-width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .responsive-table th, .responsive-table td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    .responsive-table th {
+      background-color: #f4f4f4;
+    }
+    .responsive-table tbody tr:hover {
+      background-color: #e0f7fa;
+      transition: background 0.2s;
+    }
+    @media (max-width: 600px) {
+      .responsive-table thead {
+        display: none;
+      }
+      .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td {
+        display: block;
+        width: 100%;
+      }
+      .responsive-table tr {
+        margin-bottom: 15px;
+      }
+      .responsive-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+      }
+      .responsive-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>My Awards</h2>
+  <table class="responsive-table">
+    <thead>
+      <tr>
+        <th>Award</th>
+        <th>Year</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Award">Best Student</td>
+        <td data-label="Year">2023</td>
+        <td data-label="Description">Awarded for outstanding academic performance.</td>
+      </tr>
+      <tr>
+        <td data-label="Award">Coding Champion</td>
+        <td data-label="Year">2024</td>
+        <td data-label="Description">Won first place in the university coding competition.</td>
+      </tr>
+      <tr>
+        <td data-label="Award">Leadership Award</td>
+        <td data-label="Year">2022</td>
+        <td data-label="Description">Recognized for exceptional leadership in student council.</td>
+      </tr>
+      <tr>
+        <td data-label="Award">Community Service</td>
+        <td data-label="Year">2021</td>
+        <td data-label="Description">Honored for volunteering 100+ hours in local community.</td>
+      </tr>
+      <tr>
+        <td data-label="Award">Innovation Prize</td>
+        <td data-label="Year">2020</td>
+        <td data-label="Description">Received for developing a new study app for students.</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
