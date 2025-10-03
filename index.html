@@ -53,19 +53,14 @@
   </style>
 </head>
 <body>
-  <div style="margin-bottom: 24px;">
-    <button class="nav-btn" onclick="document.getElementById('accolades').scrollIntoView({behavior: 'smooth'});">Accolades</button>
-    <a href="about.html"><button class="nav-btn">About</button></a>
-    <a href="portfolio.html"><button class="nav-btn">Portfolio</button></a>
-  </div>
-    <div class="center-content">
-      <div class="mithi-text">mithi</div>
-      <div class="button-row">
-        <a href="accolades.html"><button class="nav-btn">Accolades</button></a>
-        <a href="about.html"><button class="nav-btn">About</button></a>
-        <a href="portfolio.html"><button class="nav-btn">Portfolio</button></a>
-      </div>
+  <div class="center-content">
+    <div class="mithi-text">mithi</div>
+    <div class="button-grid">
+      <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
+      <a href="about.html"><button class="gradient-btn">About</button></a>
+      <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
     </div>
+  </div>
   <style>
     body {
       min-height: 100vh;
@@ -92,26 +87,44 @@
       color: #222;
       text-align: center;
     }
-    .button-row {
-      display: flex;
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 24px;
+      justify-items: center;
       margin-bottom: 40px;
-      justify-content: center;
     }
-    .nav-btn {
-      background-color: #007bff;
-      color: white;
+    .gradient-btn {
+      background: linear-gradient(135deg, #007bff, #ffffff);
+      color: #222;
       border: none;
       padding: 16px 32px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 1.2em;
       font-weight: bold;
-      transition: background 0.2s;
+      margin: 0 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: background 0.2s, color 0.2s;
     }
-    .nav-btn:hover {
-      background-color: #0056b3;
+    .gradient-btn:hover {
+      color: #007bff;
     }
+</style>
+<script>
+document.querySelectorAll('.gradient-btn').forEach(btn => {
+  btn.addEventListener('mousemove', function(e) {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const angle = Math.atan2(y - rect.height/2, x - rect.width/2) * 180 / Math.PI + 180;
+    btn.style.background = `linear-gradient(${angle}deg, #007bff, #ffffff)`;
+  });
+  btn.addEventListener('mouseleave', function() {
+    btn.style.background = 'linear-gradient(135deg, #007bff, #ffffff)';
+  });
+});
+</script>
   </style>
 </body>
 </html>

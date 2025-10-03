@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Award List</title>
-  <style>
     .responsive-table {
       width: 100%;
       border-collapse: collapse;
@@ -50,45 +44,30 @@
         text-align: left;
       }
     }
-  </style>
-</head>
-<body>
-  <h2>My Awards</h2>
-  <table class="responsive-table">
-    <thead>
-      <tr>
-        <th>Award</th>
-        <th>Year</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td data-label="Award">Best Student</td>
-        <td data-label="Year">2023</td>
-        <td data-label="Description">Awarded for outstanding academic performance.</td>
-      </tr>
-      <tr>
-        <td data-label="Award">Coding Champion</td>
-        <td data-label="Year">2024</td>
-        <td data-label="Description">Won first place in the university coding competition.</td>
-      </tr>
-      <tr>
-        <td data-label="Award">Leadership Award</td>
-        <td data-label="Year">2022</td>
-        <td data-label="Description">Recognized for exceptional leadership in student council.</td>
-      </tr>
-      <tr>
-        <td data-label="Award">Community Service</td>
-        <td data-label="Year">2021</td>
-        <td data-label="Description">Honored for volunteering 100+ hours in local community.</td>
-      </tr>
-      <tr>
-        <td data-label="Award">Innovation Prize</td>
-        <td data-label="Year">2020</td>
-        <td data-label="Description">Received for developing a new study app for students.</td>
-      </tr>
-    </tbody>
-  </table>
-</body>
-</html>
+
+/* Gradient interactive button styles */
+.gradient-btn {
+  background: linear-gradient(135deg, #007bff, #ffffff);
+  color: #222;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 0 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.gradient-btn:hover {
+  color: #007bff;
+}
+
+/* Grid layout for buttons */
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  margin: 40px 0;
+}
