@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Portfolio</title>
   <style>
+    body, html {
+      font-family: Arial, sans-serif;
+    }
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
@@ -45,11 +48,31 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>My Portfolio</h1>
-    <div class="video-container">
-  <iframe src="https://www.youtube.com/embed/wuiTEnJYBDc" allowfullscreen></iframe>
+  <div class="center-content">
+    <div class="mithi-text">MITHI</div>
+    <div class="container">
+      <h1>My Portfolio</h1>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/wuiTEnJYBDc" allowfullscreen></iframe>
+      </div>
     </div>
   </div>
+    .center-content {
+      display: grid;
+      grid-template-rows: auto auto;
+      align-items: center;
+      justify-items: center;
+      min-height: 30vh;
+      width: 100vw;
+    }
+    .mithi-text {
+      font-size: 2.5em;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      color: #222;
+      text-align: center;
+      text-transform: uppercase;
+    }
 </body>
 </html>

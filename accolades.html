@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Accolades</title>
   <style>
+    body, html {
+      font-family: Arial, sans-serif;
+    }
     .responsive-table {
       width: 100%;
       border-collapse: collapse;
@@ -53,7 +56,27 @@
   </style>
 </head>
 <body>
-  <h2>My Awards</h2>
+  <div class="center-content">
+    <div class="mithi-text">MITHI</div>
+    <h2>My Awards</h2>
+  </div>
+    .center-content {
+      display: grid;
+      grid-template-rows: auto auto;
+      align-items: center;
+      justify-items: center;
+      min-height: 30vh;
+      width: 100vw;
+    }
+    .mithi-text {
+      font-size: 2.5em;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      color: #222;
+      text-align: center;
+      text-transform: uppercase;
+    }
   <table class="responsive-table">
     <thead>
       <tr>
