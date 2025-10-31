@@ -38,8 +38,9 @@ svg.selectAll('path')
   .append('path')
   .attr('d', arc)
   .attr('fill', d => d.data.color)
-  .attr('stroke', '#fff')
-  .attr('stroke-width', 2)
+  /* remove white outlines as requested */
+  .attr('stroke', 'none')
+  .attr('stroke-width', 0)
   .style('cursor', 'pointer')
   .on('mouseover', function(event, d) {
     // hue shift and expand slice
@@ -50,26 +51,22 @@ svg.selectAll('path')
     } catch (e) {
       d3.select(this).transition().duration(200).attr('d', arcHover);
     }
-    // update center text
-    centerGroup.selectAll('*').remove();
-    centerGroup.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '-6')
-      .attr('fill', '#fff')
-      .style('font-size', '22px')
-      .style('font-weight', '700')
-      .text(d.data.value + '%');
-    centerGroup.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '18')
-      .attr('fill', '#fff')
-      .style('font-size', '12px')
-      .text('of my work is ' + d.data.label);
+    // show a tooltip near the mouse with percentage + label
+    tooltip.html(`<strong>${d.data.value}%</strong> — ${d.data.label}`);
+    tooltip.classed('visible', true);
+    // update position immediately
+    const [mx, my] = [event.pageX, event.pageY];
+    tooltip.style('left', (mx + 12) + 'px').style('top', (my + 12) + 'px');
+  })
+  .on('mousemove', function(event, d) {
+    // keep tooltip near mouse
+    const [mx, my] = [event.pageX, event.pageY];
+    tooltip.style('left', (mx + 12) + 'px').style('top', (my + 12) + 'px');
   })
   .on('mouseout', function(event, d) {
-    // revert
+    // revert and hide tooltip
     d3.select(this).transition().duration(200).attr('d', arc).attr('fill', d.data.color);
-    centerGroup.selectAll('*').remove();
+    tooltip.classed('visible', false);
   });
 
 // Add legend
@@ -96,4 +93,5 @@ pieData.forEach(d => {
 });
 
 // Add center text group (empty by default)
-const centerGroup = svg.append('g').attr('class', 'center-text');
+// create tooltip element appended to body; will be positioned on mousemove
+const tooltip = d3.select('body').append('div').attr('class', 'pie-tooltip');
