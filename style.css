@@ -45,6 +45,47 @@
       }
     }
 
+/* Base styles */
+html, body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #007bff, #1de9b6);
+  color: #fff;
+}
+
+.container {
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  text-align: center;
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+.mithi-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  margin: 0 0 8px 0;
+  color: #022;
+  text-transform: uppercase;
+}
+
+h1 {
+  color: #007bff;
+  margin-bottom: 16px;
+}
+
+.center-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 /* Gradient interactive button styles */
 .gradient-btn {
   background: linear-gradient(135deg, #007bff, #ffffff);

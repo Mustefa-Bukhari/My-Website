@@ -2,62 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Accolades</title>
-  <style>
-    html, body {
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #007bff, #1de9b6);
-      color: #fff;
-    }
-    .responsive-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 1em;
-      min-width: 300px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    .responsive-table th, .responsive-table td {
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-    .responsive-table th {
-      background-color: #f4f4f4;
-    }
-    .responsive-table tbody tr:hover {
-      background-color: #e0f7fa;
-      transition: background 0.2s;
-    }
-    @media (max-width: 600px) {
-      .responsive-table thead {
-        display: none;
-      }
-      .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td {
-        display: block;
-        width: 100%;
-      }
-      .responsive-table tr {
-        margin-bottom: 15px;
-      }
-      .responsive-table td {
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-      }
-      .responsive-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 15px;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="center-content">
