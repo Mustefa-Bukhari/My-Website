@@ -66,6 +66,9 @@
       <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
     </div>
   </div>
+  <div class="rounded-box">
+    <canvas id="workPieChart" width="400" height="400"></canvas>
+  </div>
   <script>
     document.querySelectorAll('.gradient-btn').forEach(btn => {
       btn.addEventListener('mousemove', function(e) {
@@ -80,6 +83,27 @@
       });
     });
   </script>
-    <script src="code.js"></script>
+  <script src="code.js"></script>
+  <script>
+    const ctx = document.getElementById('workPieChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Motion Graphics', 'Animation', 'Editing', 'Directing', 'Sound Design', 'Visual Effects'],
+        datasets: [{
+          data: [30, 25, 10, 10, 5, 20],
+          backgroundColor: ['#007bff', '#1de9b6', '#ffcc00', '#ff5733', '#c70039', '#900c3f'],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          }
+        }
+      }
+    });
+  </script>
   </body>
 </html>
