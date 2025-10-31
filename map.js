@@ -59,14 +59,20 @@
 
   try {
     // Load GeoJSON data
-    const world = await d3.json('world_detailed.geojson');
+    const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const world = await response.json();
     
     // Debug: Log features count
     console.log('Features loaded:', world.features.length);
 
     // Setup projection fitted to container
-    const projection = d3.geoNaturalEarth1()
-      .fitSize([width * 0.95, height * 0.95], world);
+    const projection = d3.geoMercator()
+      .scale(140)
+      .center([0, 20])
+      .translate([width / 2, height / 2]);
     
     const path = d3.geoPath().projection(projection);
 
@@ -79,7 +85,13 @@
     let tooltip = d3.select('.pie-tooltip');
     if (tooltip.empty()) {
       tooltip = d3.select('body').append('div')
-        .attr('class', 'pie-tooltip');
+        .attr('class', 'pie-tooltip')
+        .style('position', 'absolute')
+        .style('background', '#fff')
+        .style('padding', '5px')
+        .style('border-radius', '5px')
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
     }
 
     // Draw base layer with all countries in light blue
@@ -89,32 +101,33 @@
       .enter()
       .append('path')
       .attr('d', path)
-      .attr('fill', 'rgba(173,216,230,0.05)')
+      .attr('fill', 'rgba(173,216,230,0.2)')
       .attr('stroke', '#062a25')
-      .attr('stroke-width', 0.6)
-      .attr('pointer-events', 'none');
+      .attr('stroke-width', 0.6);
 
     // Draw overlay with colored countries
     svg.append('g')
       .selectAll('path')
-      .data(world.features.filter(d => findName(d.properties.name)))
+      .data(world.features)
       .enter()
       .append('path')
       .attr('d', path)
       .attr('fill', d => {
         const name = findName(d.properties.name);
-        return colorScale(counts[name]);
+        return name ? colorScale(counts[name]) : 'transparent';
       })
       .attr('stroke', '#062a25')
       .attr('stroke-width', 0.6)
-      .style('cursor', 'pointer')
+      .style('cursor', d => findName(d.properties.name) ? 'pointer' : 'default')
       .on('mouseover', function(event, d) {
         const name = findName(d.properties.name);
+        if (!name) return;
+        
         const count = counts[name];
         tooltip.html(`<strong>${d.properties.name}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
-          .classed('visible', true)
+          .style('opacity', 1)
           .style('left', (event.pageX + 12) + 'px')
-          .style('top', (event.pageY + 12) + 'px');
+          .style('top', (event.pageY - 28) + 'px');
         
         d3.select(this)
           .transition()
@@ -127,12 +140,14 @@
       .on('mousemove', function(event) {
         tooltip
           .style('left', (event.pageX + 12) + 'px')
-          .style('top', (event.pageY + 12) + 'px');
+          .style('top', (event.pageY - 28) + 'px');
       })
       .on('mouseout', function(event, d) {
-        tooltip.classed('visible', false);
-        
         const name = findName(d.properties.name);
+        if (!name) return;
+        
+        tooltip.style('opacity', 0);
+        
         d3.select(this)
           .transition()
           .duration(200)
