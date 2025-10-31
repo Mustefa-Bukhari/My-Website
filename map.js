@@ -16,7 +16,7 @@
   const aliases = {
     'United States': ['United States', 'United States of America', 'USA', 'US'],
     'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK'],
-    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],  // Added China for Hong Kong detection
+    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],
     'Germany': ['Germany', 'Federal Republic of Germany', 'Deutschland'],
     'Italy': ['Italy', 'Italia', 'Italian Republic'],
     'Iceland': ['Iceland', 'Republic of Iceland'],
@@ -45,9 +45,10 @@
     return null;
   }
 
-  // Set dimensions
+  // Set dimensions with space for legend
   const width = 1000;
-  const height = 520;
+  const height = 450; // Reduced to make room for legend
+  const margin = { top: 20, right: 20, bottom: 60, left: 20 };
 
   // Clear and setup container
   const container = d3.select('#map-container');
@@ -57,7 +58,7 @@
   const svg = container.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('viewBox', `0 0 ${width} ${height + margin.top + margin.bottom}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
     .style('display', 'block')
     .style('background', 'transparent');
@@ -73,11 +74,14 @@
     // Debug: Log features count
     console.log('Features loaded:', world.features.length);
 
-    // Setup projection fitted to container with padding
-    const projection = d3.geoMercator()
-      .scale(130)
-      .center([0, 35])
-      .translate([width / 2, height / 2]);
+    // Create main group for map with margin
+    const mapGroup = svg.append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Setup projection fitted to container with more optimal parameters
+    const projection = d3.geoEquirectangular()
+      .fitSize([width - margin.left - margin.right, height - margin.top - margin.bottom], world)
+      .translate([width/2, height/2]);
     
     const path = d3.geoPath().projection(projection);
 
@@ -92,18 +96,19 @@
       tooltip = d3.select('body').append('div')
         .attr('class', 'map-tooltip')
         .style('position', 'absolute')
-        .style('background', 'rgba(255, 255, 255, 0.9)')
+        .style('background', '#333')
+        .style('color', '#fff')
         .style('padding', '8px 12px')
         .style('border-radius', '4px')
         .style('font-size', '14px')
         .style('pointer-events', 'none')
         .style('opacity', 0)
-        .style('box-shadow', '0 2px 4px rgba(0,0,0,0.1)')
+        .style('box-shadow', '0 2px 4px rgba(0,0,0,0.2)')
         .style('z-index', 1000);
     }
 
     // Draw base layer with all countries in light blue
-    svg.append('g')
+    mapGroup.append('g')
       .selectAll('path')
       .data(world.features)
       .enter()
@@ -114,7 +119,7 @@
       .attr('stroke-width', 0.6);
 
     // Draw overlay with colored countries
-    svg.append('g')
+    mapGroup.append('g')
       .selectAll('path')
       .data(world.features)
       .enter()
@@ -162,10 +167,10 @@
           .attr('fill', colorScale(counts[name]));
       });
 
-    // Draw point for Hong Kong (since it's too small to see on the map)
-    const hkCoords = [114.1095, 22.3964]; // Hong Kong coordinates
+    // Draw point for Hong Kong
+    const hkCoords = [114.1095, 22.3964];
     
-    svg.append('circle')
+    mapGroup.append('circle')
       .attr('cx', projection(hkCoords)[0])
       .attr('cy', projection(hkCoords)[1])
       .attr('r', 4)
@@ -203,31 +208,37 @@
           .attr('fill', colorScale(counts['Hong Kong']));
       });
 
-    // Create legend
-    const legend = d3.select('#map-legend');
-    legend.html('');
+    // Create horizontal legend below the map
+    const legend = svg.append('g')
+      .attr('transform', `translate(0, ${height + margin.top + 20})`);
     
     const entries = Object.entries(counts)
       .map(([k,v]) => ({k,v}))
       .sort((a,b) => b.v - a.v);
     
-    entries.forEach(entry => {
-      const row = legend.append('div')
-        .style('display', 'flex')
-        .style('align-items', 'center')
-        .style('gap', '8px')
-        .style('margin-bottom', '6px');
-        
-      row.append('span')
-        .style('display', 'inline-block')
-        .style('width', '14px')
-        .style('height', '14px')
-        .style('border-radius', '4px')
-        .style('background', colorScale(entry.v));
-        
-      row.append('span')
-        .text(`${entry.k} — ${entry.v}`)
-        .style('color', '#fff');
+    const legendItemWidth = width / entries.length;
+    
+    entries.forEach((entry, i) => {
+      const x = (legendItemWidth * i) + (legendItemWidth / 2);
+      
+      const group = legend.append('g')
+        .attr('transform', `translate(${x}, 0)`);
+      
+      group.append('rect')
+        .attr('x', -8)
+        .attr('y', -8)
+        .attr('width', '16')
+        .attr('height', '16')
+        .attr('fill', colorScale(entry.v))
+        .attr('rx', '4');
+      
+      group.append('text')
+        .attr('x', 0)
+        .attr('y', 20)
+        .attr('text-anchor', 'middle')
+        .style('fill', '#fff')
+        .style('font-size', '12px')
+        .text(`${entry.k} — ${entry.v}`);
     });
 
   } catch (error) {
