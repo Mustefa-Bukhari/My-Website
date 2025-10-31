@@ -59,14 +59,57 @@
 </head>
 <body>
   <div class="center-content">
-    <div class="mithi-text">MITHI</div>
-    <div class="button-grid">
-      <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
-      <a href="about.html"><button class="gradient-btn">About</button></a>
-      <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="mithi-text">MITHI</div>
+        <div class="button-grid">
+          <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
+          <a href="about.html"><button class="gradient-btn">About</button></a>
+          <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="rounded-box"></div>
+  <div class="rounded-box">
+    <div class="pie-bg"></div>
+    <div class="pie-subtitle">The areas I have worked in</div>
+  </div>
+  <!-- Background behind pie -->
+  <style>
+    .hero {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding-top: 20px;
+      margin-bottom: 8px;
+    }
+    .hero-bg {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 92%;
+      height: 120px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(4px);
+      z-index: 0;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .hero-content { z-index: 1; display:flex; flex-direction:column; align-items:center; }
+    /* Tighter spacing so buttons sit just under the title */
+    .mithi-text { margin-bottom: 8px; }
+    .button-grid { margin-bottom: 12px; }
+    /* Rounded container for pie with subtle background */
+    .rounded-box { position: relative; z-index: 1; width: 420px; margin: 8px auto 36px; display: flex; flex-direction: column; align-items: center; }
+    .pie-bg { position:absolute; inset: -8px; border-radius: 12px; background: rgba(255,255,255,0.06); z-index: -1; width: calc(100% + 16px); height: calc(100% + 16px); }
+    .pie-subtitle { color: #fff; font-weight:600; margin-bottom: 8px; text-align:center; }
+    .pie-legend { color: #fff; margin-top: 8px; }
+  </style>
+  <!-- inside .rounded-box we let d3pie.js append svg and legend. Subtitle and bg are static HTML above. -->
   <style>
     /* Ensure the pie (svg + legend) sits above the full-screen cloud canvas */
     .rounded-box {
