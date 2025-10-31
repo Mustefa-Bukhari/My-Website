@@ -3,113 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <title>Award List</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    /* Position hero near the top (15% from top) and center it horizontally */
+    /* Base */
+    html, body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #007bff, #1de9b6);
+      color: #fff;
+    }
+
+    /* Hero (title + buttons) positioned near top (15% down) */
     .hero {
       position: absolute;
-      top: 15vh; /* 15% from top of viewport */
+      top: 15vh;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
       display: flex;
       justify-content: center;
       z-index: 10;
+      pointer-events: none; /* let children receive pointer events */
     }
-    /* Opposite-direction gradient (contrast) at 60% opacity, stretched wider than viewport */
     .hero-bg {
       position: absolute;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 140%; /* extends beyond page horizontally */
-      height: 25vh; /* 25% of viewport height */
+      width: 160%; /* extend beyond viewport horizontally */
+      height: 25vh; /* tall enough for spacing */
       border-radius: 22px;
-      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
+      /* swapped gradient: now matches pie's previous gradient direction */
+      background: linear-gradient(135deg, rgba(0,123,255,0.6), rgba(29,233,182,0.6));
       backdrop-filter: blur(6px);
-      z-index: 0;
+      z-index: 1;
       box-shadow: 0 8px 28px rgba(0,0,0,0.10);
       border: 1px solid rgba(29,233,182,0.12);
     }
-    .hero-content { z-index: 1; display:flex; flex-direction:column; align-items:center; padding: 18px 8px; }
-    /* Tighter spacing so buttons sit just under the title */
-    .mithi-text { margin-bottom: 8px; }
-    .button-grid { margin-bottom: 12px; }
-    /* Rounded container for pie positioned below the hero (20% down from hero) */
-    .rounded-box {
-      position: absolute;
-      top: calc(15vh + 20vh); /* hero top (15vh) + 20vh gap */
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 8;
-      width: 420px;
-      margin: 0 auto 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 18px 8px;
-    }
-    /* Make pie background extend horizontally beyond the viewport but not downward
-       using fixed height roughly matching the pie area */
-    .pie-bg {
-      position: absolute;
-      left: 50%;
-      top: -12px;
-      transform: translateX(-50%);
-      width: 160%; /* extends far beyond horizontal bounds */
-      height: 460px; /* roughly svg height + padding */
-      border-radius: 22px;
-      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
-      z-index: -1;
-    }
-    .pie-subtitle { color: #fff; font-weight:700; margin-bottom: 18px; text-align:center; font-size:1.05rem; }
-    .pie-legend { color: #fff; margin-top: 8px; }
-  </style>
+    .hero-content { z-index: 3; display:flex; flex-direction:column; align-items:center; pointer-events: auto; padding: 18px 8px; }
+    .mithi-text { font-size: 1.6rem; font-weight: 800; letter-spacing: .08em; margin: 0 0 8px 0; color: #022; text-transform: uppercase; }
+
+    /* Buttons */
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(180px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 16px;
       justify-items: center;
-      margin-bottom: 40px;
+      width: 520px;
+      max-width: 90vw;
+      margin-bottom: 6px;
     }
     .gradient-btn {
       background: linear-gradient(135deg, #007bff, #ffffff);
       color: #222;
       border: none;
-      padding: 16px 32px;
-      border-radius: 4px;
+      padding: 10px 18px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 1.2em;
-      font-weight: bold;
-      margin: 0 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-size: 1rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       transition: background 0.2s, color 0.2s;
     }
-    .gradient-btn:hover {
-      color: #007bff;
+    .gradient-btn:hover { color: #007bff; }
+
+    /* Pie container positioned below hero (hero + gap ~20vh) */
+    .rounded-box {
+      /* make pie part of normal document flow so subsequent sections sit below it */
+      position: relative;
+      margin: calc(15vh + 28vh) auto 0 auto; /* push it down below hero */
+      left: 0;
+      transform: none;
+      z-index: 8;
+      width: 420px;
+      max-width: 90vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 12px;
+      pointer-events: auto;
     }
-  </style>
-</head>
-<body>
-  <div class="center-content">
-    <div class="hero">
-      <div class="hero-bg"></div>
-      <div class="hero-content">
-        <div class="mithi-text">MITHI</div>
-        <div class="button-grid">
-          <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
-          <a href="about.html"><button class="gradient-btn">About</button></a>
-          <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="rounded-box">
-    <div class="pie-bg"></div>
-    <div class="pie-subtitle">The areas I have worked in</div>
-  </div>
-  
-  <style>
-    /* Tooltip for pie slices */
+
+    /* Pie background — extends horizontally beyond viewport but has fixed height so it doesn't push content down */
+    .pie-bg {
+      position: absolute;
+      left: 50%;
+      top: -12px;
+      transform: translateX(-50%);
+      width: 220%; /* extended further beyond horizontal bounds */
+      height: 480px; /* matches svg + padding */
+      border-radius: 22px;
+      /* swapped gradient: now matches hero's previous gradient direction */
+      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
+      z-index: -1;
+    }
+    .pie-subtitle { color: #fff; font-weight:700; margin-bottom: 18px; text-align:center; font-size:1.05rem; }
+
+    /* Legend & tooltip */
+    .pie-legend { color: #fff; margin-top: 8px; display:flex; flex-direction:column; align-items:center; }
+    .pie-legend div { margin-bottom:6px; }
+
     .pie-tooltip {
       position: absolute;
       pointer-events: none;
@@ -127,12 +121,50 @@
       z-index: 9999;
     }
     .pie-tooltip.visible { opacity: 1; }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      .hero-bg { height: 18vh; }
+      .rounded-box { top: calc(15vh + 30vh); width: 320px; }
+      .pie-bg { height: 420px; }
+      .mithi-text { font-size: 1.2rem; }
+      .button-grid { grid-template-columns: repeat(3, 1fr); width: 90vw; gap: 10px; }
+    }
   </style>
-  <!-- inside .rounded-box we let d3pie.js append svg and legend. Subtitle and bg are static HTML above. -->
-  <!-- Load D3 and the pie-drawing script -->
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="mithi-text">MITHI</div>
+      <div class="button-grid">
+        <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
+        <a href="about.html"><button class="gradient-btn">About</button></a>
+        <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-box">
+    <div class="pie-bg"></div>
+    <div class="pie-subtitle">The areas I have worked in</div>
+    <!-- d3pie.js will append the SVG and legend here -->
+  </div>
+
+  <!-- Map section: Places my work has screened at -->
+  <div id="map-section" style="position:relative; margin-top: 40px; display:flex; flex-direction:column; align-items:center;">
+    <h2 style="color:#012; margin-bottom:12px;">Places my work has screened at</h2>
+    <div id="map-container" style="width: 90%; max-width: 1100px; height: 520px; background: transparent; position: relative;"></div>
+    <div id="map-legend" style="margin-top:12px; color:#fff;"></div>
+  </div>
+
+  <!-- load D3 + pie script -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script src="d3pie.js"></script>
+  <script src="choropleth.js"></script>
+
   <script>
+    // Button gradient interaction
     document.querySelectorAll('.gradient-btn').forEach(btn => {
       btn.addEventListener('mousemove', function(e) {
         const rect = btn.getBoundingClientRect();
@@ -146,6 +178,7 @@
       });
     });
   </script>
-    <script src="code.js"></script>
-  </body>
+
+  <script src="code.js"></script>
+</body>
 </html>
