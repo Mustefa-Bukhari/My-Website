@@ -1,4 +1,4 @@
-.responsive-table {
+    .responsive-table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
@@ -70,15 +70,4 @@
   gap: 24px;
   justify-items: center;
   margin: 40px 0;
-}
-
-/* Rounded box styles */
-.rounded-box {
-  background: #fff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin: 40px auto;
-  max-width: 600px;
-  text-align: center;
 }
