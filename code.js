@@ -1,91 +1,96 @@
 // code.js - Animated feathered white cloudlets over gradient background
+(function() {
+  const CLOUD_COUNT = 8;
+  const CLOUD_MIN_RADIUS = 40;
+  const CLOUD_MAX_RADIUS = 90;
+  const CLOUD_MIN_SPEED = 0.1;
+  const CLOUD_MAX_SPEED = 0.3;
 
-const CLOUD_COUNT = 8;
-const CLOUD_MIN_RADIUS = 40;
-const CLOUD_MAX_RADIUS = 90;
-const CLOUD_MIN_SPEED = 0.1;
-const CLOUD_MAX_SPEED = 0.3;
+  const canvas = document.createElement('canvas');
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '0';
+  document.body.prepend(canvas);
 
-const canvas = document.createElement('canvas');
-canvas.style.position = 'fixed';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.width = '100vw';
-canvas.style.height = '100vh';
-canvas.style.pointerEvents = 'none';
-canvas.style.zIndex = '0';
-document.body.prepend(canvas);
+  const ctx = canvas.getContext('2d');
+  let canvasWidth = window.innerWidth;
+  let canvasHeight = window.innerHeight;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
 
-const ctx = canvas.getContext('2d');
-let width = window.innerWidth;
-let height = window.innerHeight;
-canvas.width = width;
-canvas.height = height;
+  window.addEventListener('resize', () => {
+    canvasWidth = window.innerWidth;
+    canvasHeight = window.innerHeight;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+  });
 
-window.addEventListener('resize', () => {
-  width = window.innerWidth;
-  height = window.innerHeight;
-  canvas.width = width;
-  canvas.height = height;
-});
+  function randomBetween(a, b) {
+    return a + Math.random() * (b - a);
+  }
 
-function randomBetween(a, b) {
-  return a + Math.random() * (b - a);
-}
+  function makeCloud() {
+    return {
+      x: randomBetween(0, canvasWidth),
+      y: randomBetween(0, canvasHeight * 0.7),
+      r: randomBetween(CLOUD_MIN_RADIUS, CLOUD_MAX_RADIUS),
+      speed: randomBetween(CLOUD_MIN_SPEED, CLOUD_MAX_SPEED) * (Math.random() < 0.5 ? 1 : -1),
+      alpha: randomBetween(0.18, 0.32),
+      offset: randomBetween(-20, 20)
+    };
+  }
 
-function makeCloud() {
-  return {
-    x: randomBetween(0, width),
-    y: randomBetween(0, height * 0.7),
-    r: randomBetween(CLOUD_MIN_RADIUS, CLOUD_MAX_RADIUS),
-    speed: randomBetween(CLOUD_MIN_SPEED, CLOUD_MAX_SPEED) * (Math.random() < 0.5 ? 1 : -1),
-    alpha: randomBetween(0.18, 0.32),
-    offset: randomBetween(-20, 20)
-  };
-}
+  let clouds = Array.from({length: CLOUD_COUNT}, makeCloud);
 
-let clouds = Array.from({length: CLOUD_COUNT}, makeCloud);
-
-function drawCloud(cloud) {
-  ctx.save();
-  ctx.globalAlpha = cloud.alpha;
-  let cx = cloud.x, cy = cloud.y, r = cloud.r;
-  // Draw main ellipse
-  let grad = ctx.createRadialGradient(cx, cy, r * 0.5, cx, cy, r);
-  grad.addColorStop(0, 'rgba(255,255,255,0.9)');
-  grad.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fillStyle = grad;
-  ctx.fill();
-  // Add a few feathered blobs
-  for (let i = 0; i < 3; i++) {
-    let angle = Math.PI * 2 * Math.random();
-    let rx = cx + Math.cos(angle) * r * randomBetween(0.4, 0.8);
-    let ry = cy + Math.sin(angle) * r * randomBetween(0.2, 0.5) + cloud.offset;
-    let rr = r * randomBetween(0.3, 0.6);
-    let g2 = ctx.createRadialGradient(rx, ry, rr * 0.5, rx, ry, rr);
-    g2.addColorStop(0, 'rgba(255,255,255,0.7)');
-    g2.addColorStop(1, 'rgba(255,255,255,0)');
+  function drawCloud(cloud) {
+    ctx.save();
+    ctx.translate(cloud.x, cloud.y);
     ctx.beginPath();
-    ctx.arc(rx, ry, rr, 0, 2 * Math.PI);
+    
+    // Draw feathered cloud shape
+    for(let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const x = Math.cos(angle) * cloud.r;
+      const y = Math.sin(angle) * cloud.r + cloud.offset;
+      
+      if(i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+    
     ctx.closePath();
-    ctx.fillStyle = g2;
+    ctx.fillStyle = `rgba(255, 255, 255, ${cloud.alpha})`;
     ctx.fill();
+    ctx.restore();
   }
-  ctx.restore();
-}
 
-function animate() {
-  ctx.clearRect(0, 0, width, height);
-  for (let cloud of clouds) {
-    drawCloud(cloud);
+  function updateCloud(cloud) {
     cloud.x += cloud.speed;
-    if (cloud.x - cloud.r > width) cloud.x = -cloud.r;
-    if (cloud.x + cloud.r < 0) cloud.x = width + cloud.r;
+    
+    // Wrap around screen
+    if(cloud.speed > 0 && cloud.x - cloud.r > canvasWidth) {
+      cloud.x = -cloud.r;
+    } else if(cloud.speed < 0 && cloud.x + cloud.r < 0) {
+      cloud.x = canvasWidth + cloud.r;
+    }
   }
-  requestAnimationFrame(animate);
-}
 
-animate();
+  function animate() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    clouds.forEach(cloud => {
+      updateCloud(cloud);
+      drawCloud(cloud);
+    });
+    
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
