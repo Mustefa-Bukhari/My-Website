@@ -179,10 +179,10 @@
     });
   </script>
 
-  <!-- Map from provided PNG: overlay markers and legend -->
+  <!-- Choropleth vector map using GeoJSON (fills countries instead of dots) -->
   <script>
-    // Ensure the image file 'world-map.png' is placed in the project root.
-    (function(){
+    (async function(){
+      // counts for screening locations
       const counts = {
         'United States': 2,
         'Italy': 1,
@@ -194,130 +194,112 @@
         'Pakistan': 1
       };
 
-      // Compute marker positions from geographic centroids (lon/lat)
-      // Assumes the provided `world-map.png` uses a simple equirectangular projection
-      // (most flat world PNGs do). This maps longitude/latitude to percentage offsets
-      // so markers line up more reliably across different image sizes.
-      const geo = {
-        'United States': {lon: -98.583, lat: 39.833},
-        'Italy': {lon: 12.5674, lat: 41.8719},
-        'Iceland': {lon: -19.0208, lat: 64.9631},
-        'Hong Kong': {lon: 114.1095, lat: 22.3964},
-        'Germany': {lon: 10.4515, lat: 51.1657},
-        'United Kingdom': {lon: -3.4360, lat: 55.3781},
-        'Mexico': {lon: -102.5528, lat: 23.6345},
-        'Pakistan': {lon: 69.3451, lat: 30.3753}
+      // Normalize some alternate country names to match GeoJSON properties
+      const aliases = {
+        'United States': ['United States','United States of America','USA'],
+        'United Kingdom': ['United Kingdom','United Kingdom of Great Britain and Northern Ireland','UK'],
+        'Hong Kong': ['Hong Kong']
       };
 
-      function lonLatToPercent(lon, lat) {
-        // x: 0..100 left->right, y: 0..100 top->bottom
-        const x = (lon + 180) / 360 * 100;
-        const y = (90 - lat) / 180 * 100;
-        return {x, y};
+      function findName(propName) {
+        if (!propName) return null;
+        // direct match
+        for (const k of Object.keys(counts)) {
+          if (propName === k) return k;
+          const a = aliases[k];
+          if (a && a.indexOf(propName) >= 0) return k;
+        }
+        // fallback: try a simple substring match for common cases
+        for (const k of Object.keys(counts)) {
+          if (propName.includes(k.split(' ')[0])) return k;
+        }
+        return null;
       }
 
-      const positions = {};
-      Object.keys(geo).forEach(k => {
-        positions[k] = lonLatToPercent(geo[k].lon, geo[k].lat);
-      });
+      const container = d3.select('#map-container');
+      container.html('');
+      const width = container.node().clientWidth || 1000;
+      const height = container.node().clientHeight || 520;
 
+      // draw the provided PNG as a background so we preserve the original aesthetic,
+      // then render the SVG choropleth on top. The SVG paths use semi-transparent fills
+      // so the PNG's country outlines and texture show through.
+      container.append('img')
+        .attr('src','world-map.png')
+        .attr('alt','World map')
+        .style('position','absolute')
+        .style('left','0')
+        .style('top','0')
+        .style('width','100%')
+        .style('height','100%')
+        .style('object-fit','cover')
+        .style('display','block');
+
+      const svg = container.append('svg')
+        .attr('width','100%')
+        .attr('height','100%')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .style('display','block')
+        .style('position','relative')
+        .style('z-index', 2);
+
+      // fetch a GeoJSON with country names (public raw file)
+      const world = await d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+
+      // projection fitted to the world geometry and our container
+      const projection = d3.geoNaturalEarth1()
+        .fitSize([width, height], world);
+
+      const path = d3.geoPath().projection(projection);
+
+      // color scale
       const max = Math.max(...Object.values(counts));
-      const colorScale = d3.scaleLinear().domain([1, max]).range(["#aeeaf6","#00d8b3"]);
+      const colorScale = d3.scaleLinear().domain([0, max]).range(['#e6fbff','#00d8b3']);
 
-      const container = document.getElementById('map-container');
-      // clear any previous content
-      container.innerHTML = '';
-
-      // image
-      const img = document.createElement('img');
-      img.src = 'world-map.png';
-      img.alt = 'World map';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.display = 'block';
-      img.style.objectFit = 'cover';
-      img.style.position = 'absolute';
-      img.style.left = '0';
-      img.style.top = '0';
-      container.appendChild(img);
-
-      // overlay
-      const overlay = document.createElement('div');
-      overlay.style.position = 'absolute';
-      overlay.style.left = '0';
-      overlay.style.top = '0';
-      overlay.style.width = '100%';
-      overlay.style.height = '100%';
-      overlay.style.pointerEvents = 'none';
-      container.appendChild(overlay);
-
-      // tooltip reuse: create if none
-      let mapTooltip = document.querySelector('.pie-tooltip');
-      if (!mapTooltip) {
-        mapTooltip = document.createElement('div');
-        mapTooltip.className = 'pie-tooltip';
-        document.body.appendChild(mapTooltip);
+      // tooltip
+      let tooltip = d3.select('.pie-tooltip');
+      if (tooltip.empty()) {
+        tooltip = d3.select('body').append('div').attr('class','pie-tooltip');
       }
 
-      Object.keys(positions).forEach(name => {
-        const pos = positions[name];
-        const count = counts[name] || 0;
-        const el = document.createElement('div');
-        el.className = 'map-marker';
-        el.style.position = 'absolute';
-        el.style.left = pos.x + '%';
-        el.style.top = pos.y + '%';
-        el.style.transform = 'translate(-50%,-50%)';
-  const size = 10 + (count - 1) * 6; // base size + scale by count
-  el.style.width = size + 'px';
-  el.style.height = size + 'px';
-  el.style.borderRadius = '50%';
-        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
-        el.style.pointerEvents = 'auto';
-        el.style.cursor = 'pointer';
-  el.style.border = '2px solid rgba(255,255,255,0.6)';
-  el.style.background = count ? colorScale(count) : 'rgba(173,216,230,0.05)';
+      // draw countries
+      svg.append('g').selectAll('path')
+        .data(world.features)
+        .enter().append('path')
+        .attr('d', path)
+        .attr('fill', d => {
+          const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
+          const key = findName(name);
+          return key ? colorScale(counts[key]) : '#bfbfbf';
+        })
+        .attr('fill-opacity', d => {
+          const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
+          const key = findName(name);
+          // make fills semi-transparent so the PNG's original outlines/textures remain visible
+          return key ? 0.92 : 0.7;
+        })
+        .attr('stroke', '#062a25')
+        .attr('stroke-width', 0.6)
+        .on('mouseover', function(event,d){
+          const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
+          const key = findName(name);
+          const cnt = key ? counts[key] : 0;
+          tooltip.html(`<strong>${name}</strong><br>${cnt} screening${cnt===1?'':'s'}`)
+            .classed('visible', true);
+        })
+        .on('mousemove', function(event){
+          tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY + 12) + 'px');
+        })
+        .on('mouseout', function(){ tooltip.classed('visible', false); });
 
-        // tooltip behavior
-        el.addEventListener('mouseover', (ev) => {
-          mapTooltip.innerHTML = `<strong>${name}</strong><br>${count} screening${count===1?'':'s'}`;
-          mapTooltip.classList.add('visible');
-          mapTooltip.style.left = (ev.pageX + 12) + 'px';
-          mapTooltip.style.top = (ev.pageY + 12) + 'px';
-        });
-        el.addEventListener('mousemove', (ev) => {
-          mapTooltip.style.left = (ev.pageX + 12) + 'px';
-          mapTooltip.style.top = (ev.pageY + 12) + 'px';
-        });
-        el.addEventListener('mouseout', () => {
-          mapTooltip.classList.remove('visible');
-        });
-
-        overlay.appendChild(el);
-      });
-
-      // legend: recreate and describe counts
-      const legend = document.getElementById('map-legend');
-      legend.innerHTML = '';
-      const keys = Object.keys(counts).map(k => ({k, v: counts[k]})).sort((a,b)=>b.v-a.v);
-      keys.forEach(entry => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.gap = '8px';
-        row.style.marginBottom = '6px';
-        const sw = document.createElement('span');
-        sw.style.display = 'inline-block';
-        sw.style.width = '14px';
-        sw.style.height = '14px';
-        sw.style.borderRadius = '4px';
-        sw.style.background = entry.v ? colorScale(entry.v) : 'rgba(173,216,230,0.05)';
-        row.appendChild(sw);
-        const label = document.createElement('span');
-        label.textContent = `${entry.k} — ${entry.v}`;
-        label.style.color = '#fff';
-        row.appendChild(label);
-        legend.appendChild(row);
+      // legend
+      const legend = d3.select('#map-legend');
+      legend.html('');
+      const entries = Object.keys(counts).map(k=>({k,v:counts[k]})).sort((a,b)=>b.v-a.v);
+      entries.forEach(entry => {
+        const row = legend.append('div').style('display','flex').style('align-items','center').style('gap','8px').style('margin-bottom','6px');
+        row.append('span').style('display','inline-block').style('width','14px').style('height','14px').style('border-radius','4px').style('background', colorScale(entry.v));
+        row.append('span').text(`${entry.k} — ${entry.v}`).style('color','#fff');
       });
 
     })();
