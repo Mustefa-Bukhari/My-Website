@@ -12,12 +12,15 @@
     'Pakistan': 1
   };
 
+  // Set explicit dimensions
+  const width = 1000;
+  const height = 520;
+
+  // Clear and setup container
   const container = d3.select('#map-container');
   container.html('');
-  const width = container.node().clientWidth || 1000;
-  const height = container.node().clientHeight || 520;
 
-  // Create SVG with proper viewBox
+  // Create SVG with responsive sizing
   const svg = container.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
@@ -27,13 +30,14 @@
     .style('background', 'transparent');
 
   try {
-    // Load our GeoJSON with detailed country boundaries
+    // Load our GeoJSON
     const world = await d3.json('world_detailed.geojson');
     
-    // Setup projection for world map view
-    const projection = d3.geoMercator()
-      .fitSize([width * 0.95, height * 0.95], world)
-      .translate([width/2, height/2]);
+    // Use Natural Earth projection for better world map view
+    const projection = d3.geoNaturalEarth1()
+      .scale(width / 6.5)
+      .translate([width / 2, height / 2])
+      .rotate([-10, 0]); // Slight rotation to better center the view
     
     const path = d3.geoPath().projection(projection);
 
