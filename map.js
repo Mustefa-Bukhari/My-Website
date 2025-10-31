@@ -46,22 +46,28 @@
   }
 
   // Set dimensions with space for legend
-  const width = 1000;
-  const height = 450; // Reduced to make room for legend
-  const margin = { top: 20, right: 20, bottom: 60, left: 20 };
+  const width = 800;  // Reduced width
+  const height = 400; // Proportional height
+  const margin = { top: 20, right: 20, bottom: 20, left: 160 }; // Increased left margin for legend
 
   // Clear and setup container
   const container = d3.select('#map-container');
   container.html('');
 
+  // Create background rounded rectangle
+  container.style('background', 'rgba(255, 255, 255, 0.1)')
+          .style('border-radius', '22px')
+          .style('padding', '20px')
+          .style('box-shadow', '0 8px 32px rgba(0,0,0,0.1)')
+          .style('border', '1px solid rgba(255,255,255,0.1)');
+
   // Create SVG with responsive sizing
   const svg = container.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('viewBox', `0 0 ${width} ${height + margin.top + margin.bottom}`)
+    .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
-    .style('display', 'block')
-    .style('background', 'transparent');
+    .style('display', 'block');
 
   try {
     // Load GeoJSON data
@@ -71,17 +77,13 @@
     }
     const world = await response.json();
     
-    // Debug: Log features count
-    console.log('Features loaded:', world.features.length);
-
     // Create main group for map with margin
     const mapGroup = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Setup projection fitted to container with more optimal parameters
     const projection = d3.geoEquirectangular()
-      .fitSize([width - margin.left - margin.right, height - margin.top - margin.bottom], world)
-      .translate([width/2, height/2]);
+      .fitSize([width - margin.left - margin.right, height], world);
     
     const path = d3.geoPath().projection(projection);
 
@@ -208,34 +210,29 @@
           .attr('fill', colorScale(counts['Hong Kong']));
       });
 
-    // Create horizontal legend below the map
-    const legend = svg.append('g')
-      .attr('transform', `translate(0, ${height + margin.top + 20})`);
+    // Create vertical legend on the left
+    const legendGroup = svg.append('g')
+      .attr('transform', `translate(20,${margin.top})`);
     
     const entries = Object.entries(counts)
       .map(([k,v]) => ({k,v}))
       .sort((a,b) => b.v - a.v);
     
-    const legendItemWidth = width / entries.length;
+    const legendSpacing = 30;
     
     entries.forEach((entry, i) => {
-      const x = (legendItemWidth * i) + (legendItemWidth / 2);
-      
-      const group = legend.append('g')
-        .attr('transform', `translate(${x}, 0)`);
+      const group = legendGroup.append('g')
+        .attr('transform', `translate(0, ${i * legendSpacing})`);
       
       group.append('rect')
-        .attr('x', -8)
-        .attr('y', -8)
-        .attr('width', '16')
-        .attr('height', '16')
-        .attr('fill', colorScale(entry.v))
-        .attr('rx', '4');
+        .attr('width', 16)
+        .attr('height', 16)
+        .attr('rx', 4)
+        .attr('fill', colorScale(entry.v));
       
       group.append('text')
-        .attr('x', 0)
-        .attr('y', 20)
-        .attr('text-anchor', 'middle')
+        .attr('x', 24)
+        .attr('y', 12)
         .style('fill', '#fff')
         .style('font-size', '12px')
         .text(`${entry.k} — ${entry.v}`);

@@ -19,7 +19,7 @@ const svg = d3.select('.rounded-box')
   .attr('height', height)
   .style('overflow', 'visible')
   .append('g')
-  .attr('transform', `translate(${width / 2},${height / 2})`);
+  .attr('transform', `translate(${width/2},${height/2})`);
 
 // Setup tooltip
 let tooltip = d3.select('.pie-tooltip');
@@ -27,7 +27,8 @@ if (tooltip.empty()) {
   tooltip = d3.select('body').append('div')
     .attr('class', 'pie-tooltip')
     .style('position', 'absolute')
-    .style('background', 'rgba(255, 255, 255, 0.9)')
+    .style('background', '#333')
+    .style('color', '#fff')
     .style('padding', '8px 12px')
     .style('border-radius', '4px')
     .style('font-size', '14px')
@@ -49,6 +50,7 @@ const arcHover = d3.arc()
   .innerRadius(0)
   .outerRadius(radius + 6);
 
+// Draw pie slices
 svg.selectAll('path')
   .data(pie(pieData))
   .enter()
@@ -59,7 +61,6 @@ svg.selectAll('path')
   .attr('stroke-width', 0)
   .style('cursor', 'pointer')
   .on('mouseover', function(event, d) {
-    // hue shift and expand slice
     try {
       const base = d3.hsl(d.data.color);
       const shifted = d3.hsl((base.h + 25) % 360, Math.min(1, base.s * 1.05), Math.max(0.2, base.l * 0.95));
@@ -109,5 +110,36 @@ svg.selectAll('text')
   .style('font-size', '12px')
   .style('fill', '#fff')
   .text(d => `${d.data.value}%`);
+
+// Add legend
+const legendSpacing = 20;
+const legendRectSize = 14;
+
+const legend = d3.select('.rounded-box')
+  .append('div')
+  .style('margin-top', '20px')
+  .style('display', 'flex')
+  .style('flex-wrap', 'wrap')
+  .style('justify-content', 'center')
+  .style('gap', '20px');
+
+pieData.forEach(data => {
+  const legendItem = legend.append('div')
+    .style('display', 'flex')
+    .style('align-items', 'center')
+    .style('gap', '8px');
+
+  legendItem.append('span')
+    .style('width', `${legendRectSize}px`)
+    .style('height', `${legendRectSize}px`)
+    .style('background-color', data.color)
+    .style('border-radius', '4px')
+    .style('display', 'inline-block');
+
+  legendItem.append('span')
+    .style('color', '#fff')
+    .style('font-size', '14px')
+    .text(`${data.label} (${data.value}%)`);
+});
 
 })();
