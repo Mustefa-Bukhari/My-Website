@@ -4,34 +4,66 @@
   <meta charset="UTF-8">
   <title>Award List</title>
   <style>
-    html, body {
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #007bff, #1de9b6);
-      color: #fff;
+    /* Position hero near the top (15% from top) and center it horizontally */
+    .hero {
+      position: absolute;
+      top: 15vh; /* 15% from top of viewport */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 10;
     }
-    .center-content {
-      display: grid;
-      grid-template-rows: 1fr auto;
+    /* Opposite-direction gradient (contrast) at 60% opacity, stretched wider than viewport */
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140%; /* extends beyond page horizontally */
+      height: 25vh; /* 25% of viewport height */
+      border-radius: 22px;
+      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
+      backdrop-filter: blur(6px);
+      z-index: 0;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+      border: 1px solid rgba(29,233,182,0.12);
+    }
+    .hero-content { z-index: 1; display:flex; flex-direction:column; align-items:center; padding: 18px 8px; }
+    /* Tighter spacing so buttons sit just under the title */
+    .mithi-text { margin-bottom: 8px; }
+    .button-grid { margin-bottom: 12px; }
+    /* Rounded container for pie positioned below the hero (20% down from hero) */
+    .rounded-box {
+      position: absolute;
+      top: calc(15vh + 20vh); /* hero top (15vh) + 20vh gap */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 8;
+      width: 420px;
+      margin: 0 auto 36px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-items: center;
-      min-height: 90vh;
-      width: 100vw;
+      padding: 18px 8px;
     }
-    .mithi-text {
-      font-size: 4em;
-      font-weight: bold;
-      letter-spacing: 0.1em;
-      margin-bottom: 40px;
-      color: #fff;
-      text-align: center;
-      text-transform: uppercase;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    /* Make pie background extend horizontally beyond the viewport but not downward
+       using fixed height roughly matching the pie area */
+    .pie-bg {
+      position: absolute;
+      left: 50%;
+      top: -12px;
+      transform: translateX(-50%);
+      width: 160%; /* extends far beyond horizontal bounds */
+      height: 460px; /* roughly svg height + padding */
+      border-radius: 22px;
+      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
+      z-index: -1;
     }
-    h2, h1, p, th, td, .container {
-      color: #fff !important;
-    }
+    .pie-subtitle { color: #fff; font-weight:700; margin-bottom: 18px; text-align:center; font-size:1.05rem; }
+    .pie-legend { color: #fff; margin-top: 8px; }
+  </style>
     .button-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -75,42 +107,7 @@
     <div class="pie-bg"></div>
     <div class="pie-subtitle">The areas I have worked in</div>
   </div>
-  <!-- Background behind pie -->
-  <style>
-    .hero {
-      position: relative;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      padding-top: 20px;
-      margin-bottom: 8px;
-    }
-    .hero-bg {
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 110%;
-      height: 25vh; /* 25% of viewport height for generous spacing */
-      border-radius: 22px;
-      /* light turquoise at 60% opacity */
-      background: rgba(29,233,182,0.6);
-      backdrop-filter: blur(6px);
-      z-index: 0;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
-      border: 1px solid rgba(29,233,182,0.12);
-    }
-    .hero-content { z-index: 1; display:flex; flex-direction:column; align-items:center; }
-    /* Tighter spacing so buttons sit just under the title */
-    .mithi-text { margin-bottom: 8px; }
-    .button-grid { margin-bottom: 12px; }
-    /* Rounded container for pie with subtle background */
-    .rounded-box { position: relative; z-index: 1; width: 420px; margin: 8px auto 36px; display: flex; flex-direction: column; align-items: center; }
-    /* make pie background extend beyond the box by ~25% so content isn't touching edges */
-    .pie-bg { position:absolute; inset: -25%; border-radius: 18px; background: rgba(29,233,182,0.6); z-index: -1; }
-    .pie-subtitle { color: #fff; font-weight:700; margin-bottom: 18px; text-align:center; font-size:1.05rem; }
-    .pie-legend { color: #fff; margin-top: 8px; }
-  </style>
+  
   <style>
     /* Tooltip for pie slices */
     .pie-tooltip {
@@ -132,27 +129,6 @@
     .pie-tooltip.visible { opacity: 1; }
   </style>
   <!-- inside .rounded-box we let d3pie.js append svg and legend. Subtitle and bg are static HTML above. -->
-  <style>
-    /* Ensure the pie (svg + legend) sits above the full-screen cloud canvas */
-    .rounded-box {
-      position: relative;
-      z-index: 1;
-      width: 420px;
-      margin: 24px auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .rounded-box svg {
-      display: block;
-      max-width: 100%;
-      height: auto;
-    }
-    .pie-legend {
-      color: #fff;
-      margin-top: 8px;
-    }
-  </style>
   <!-- Load D3 and the pie-drawing script -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script src="d3pie.js"></script>
