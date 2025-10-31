@@ -158,10 +158,10 @@
     <div id="map-legend" style="margin-top:12px; color:#fff;"></div>
   </div>
 
-  <!-- load D3 + pie script -->
+  <!-- load D3 + scripts -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script src="d3pie.js"></script>
-  <!-- Using a provided PNG for the map instead of the GeoJSON choropleth. Place your PNG named `world-map.png` in the project root. -->
+  <script src="map.js"></script>
 
   <script>
     // Button gradient interaction
@@ -240,8 +240,8 @@
         .attr('viewBox', `0 0 ${width} ${height}`)
         .style('display','block');
 
-      // fetch a GeoJSON with country names (public raw file)
-      const world = await d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+      // use our local GeoJSON that has exactly the countries we need
+      const world = await d3.json('world_detailed.geojson');
 
       // projection fitted to the world geometry and our container
       const projection = d3.geoNaturalEarth1()
