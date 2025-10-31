@@ -34,7 +34,8 @@
       width: 160%; /* extend beyond viewport horizontally */
       height: 25vh; /* tall enough for spacing */
       border-radius: 22px;
-      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
+      /* swapped gradient: now matches pie's previous gradient direction */
+      background: linear-gradient(135deg, rgba(0,123,255,0.6), rgba(29,233,182,0.6));
       backdrop-filter: blur(6px);
       z-index: 1;
       box-shadow: 0 8px 28px rgba(0,0,0,0.10);
@@ -89,10 +90,11 @@
       left: 50%;
       top: -12px;
       transform: translateX(-50%);
-      width: 160%;
+      width: 220%; /* extended further beyond horizontal bounds */
       height: 480px; /* matches svg + padding */
       border-radius: 22px;
-      background: linear-gradient(135deg, rgba(0,123,255,0.6), rgba(29,233,182,0.6)); /* opposite direction for contrast */
+      /* swapped gradient: now matches hero's previous gradient direction */
+      background: linear-gradient(315deg, rgba(29,233,182,0.6), rgba(0,123,255,0.6));
       z-index: -1;
     }
     .pie-subtitle { color: #fff; font-weight:700; margin-bottom: 18px; text-align:center; font-size:1.05rem; }
