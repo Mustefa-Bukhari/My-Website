@@ -66,9 +66,31 @@
       <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
     </div>
   </div>
-  <div class="rounded-box">
-    <canvas id="workPieChart" width="400" height="400"></canvas>
-  </div>
+  <div class="rounded-box"></div>
+  <style>
+    /* Ensure the pie (svg + legend) sits above the full-screen cloud canvas */
+    .rounded-box {
+      position: relative;
+      z-index: 1;
+      width: 420px;
+      margin: 24px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .rounded-box svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .pie-legend {
+      color: #fff;
+      margin-top: 8px;
+    }
+  </style>
+  <!-- Load D3 and the pie-drawing script -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="d3pie.js"></script>
   <script>
     document.querySelectorAll('.gradient-btn').forEach(btn => {
       btn.addEventListener('mousemove', function(e) {
