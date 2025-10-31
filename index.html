@@ -221,27 +221,11 @@
       const width = container.node().clientWidth || 1000;
       const height = container.node().clientHeight || 520;
 
-      // draw the provided PNG as a background so we preserve the original aesthetic,
-      // then render the SVG choropleth on top. The SVG paths use semi-transparent fills
-      // so the PNG's country outlines and texture show through.
-      container.append('img')
-        .attr('src','world-map.png')
-        .attr('alt','World map')
-        .style('position','absolute')
-        .style('left','0')
-        .style('top','0')
-        .style('width','100%')
-        .style('height','100%')
-        .style('object-fit','cover')
-        .style('display','block');
-
       const svg = container.append('svg')
         .attr('width','100%')
         .attr('height','100%')
         .attr('viewBox', `0 0 ${width} ${height}`)
-        .style('display','block')
-        .style('position','relative')
-        .style('z-index', 2);
+        .style('display','block');
 
       // fetch a GeoJSON with country names (public raw file)
       const world = await d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
@@ -254,7 +238,7 @@
 
       // color scale
       const max = Math.max(...Object.values(counts));
-      const colorScale = d3.scaleLinear().domain([0, max]).range(['#e6fbff','#00d8b3']);
+      const colorScale = d3.scaleLinear().domain([1, max]).range(['#aeeaf6','#00d8b3']);
 
       // tooltip
       let tooltip = d3.select('.pie-tooltip');
@@ -270,25 +254,30 @@
         .attr('fill', d => {
           const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
           const key = findName(name);
-          return key ? colorScale(counts[key]) : '#bfbfbf';
+          return key ? colorScale(counts[key]) : 'rgba(173,216,230,0.05)'; // 5% light blue for no screenings
         })
         .attr('fill-opacity', d => {
           const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
           const key = findName(name);
-          // make fills semi-transparent so the PNG's original outlines/textures remain visible
-          return key ? 0.92 : 0.7;
+          return key ? 0.9 : 1; // 90% opacity for countries with screenings
         })
         .attr('stroke', '#062a25')
         .attr('stroke-width', 0.6)
         .on('mouseover', function(event,d){
           const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
           const key = findName(name);
-          const cnt = key ? counts[key] : 0;
-          tooltip.html(`<strong>${name}</strong><br>${cnt} screening${cnt===1?'':'s'}`)
-            .classed('visible', true);
+          if (key) { // only show tooltip for countries with screenings
+            const cnt = counts[key];
+            tooltip.html(`<strong>${name}</strong><br>${cnt} screening${cnt===1?'':'s'}`)
+              .classed('visible', true);
+          }
         })
         .on('mousemove', function(event){
-          tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY + 12) + 'px');
+          const name = d3.select(this).datum().properties.name;
+          const key = findName(name);
+          if (key) {
+            tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY + 12) + 'px');
+          }
         })
         .on('mouseout', function(){ tooltip.classed('visible', false); });
 
