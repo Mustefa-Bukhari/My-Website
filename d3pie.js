@@ -21,6 +21,22 @@ const svg = d3.select('.rounded-box')
   .append('g')
   .attr('transform', `translate(${width / 2},${height / 2})`);
 
+// Setup tooltip
+let tooltip = d3.select('.pie-tooltip');
+if (tooltip.empty()) {
+  tooltip = d3.select('body').append('div')
+    .attr('class', 'pie-tooltip')
+    .style('position', 'absolute')
+    .style('background', 'rgba(255, 255, 255, 0.9)')
+    .style('padding', '8px 12px')
+    .style('border-radius', '4px')
+    .style('font-size', '14px')
+    .style('pointer-events', 'none')
+    .style('opacity', 0)
+    .style('box-shadow', '0 2px 4px rgba(0,0,0,0.1)')
+    .style('z-index', 1000);
+}
+
 const pie = d3.pie()
   .value(d => d.value)
   .sort(null);
@@ -39,7 +55,6 @@ svg.selectAll('path')
   .append('path')
   .attr('d', arc)
   .attr('fill', d => d.data.color)
-  /* remove white outlines as requested */
   .attr('stroke', 'none')
   .attr('stroke-width', 0)
   .style('cursor', 'pointer')
@@ -48,53 +63,51 @@ svg.selectAll('path')
     try {
       const base = d3.hsl(d.data.color);
       const shifted = d3.hsl((base.h + 25) % 360, Math.min(1, base.s * 1.05), Math.max(0.2, base.l * 0.95));
-      d3.select(this).transition().duration(200).attr('d', arcHover).attr('fill', shifted.toString());
+      
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr('d', arcHover)
+        .attr('fill', shifted.toString());
+        
+      tooltip.html(`<strong>${d.data.label}</strong><br>${d.data.value}%`)
+        .style('opacity', 1)
+        .style('left', (event.pageX + 12) + 'px')
+        .style('top', (event.pageY - 28) + 'px');
     } catch (e) {
-      d3.select(this).transition().duration(200).attr('d', arcHover);
+      console.error('Error in mouseover:', e);
     }
-    // show a tooltip near the mouse with percentage + label
-    tooltip.html(`<strong>${d.data.value}%</strong> — ${d.data.label}`);
-    tooltip.classed('visible', true);
-    // update position immediately
-    const [mx, my] = [event.pageX, event.pageY];
-    tooltip.style('left', (mx + 12) + 'px').style('top', (my + 12) + 'px');
   })
-  .on('mousemove', function(event, d) {
-    // keep tooltip near mouse
-    const [mx, my] = [event.pageX, event.pageY];
-    tooltip.style('left', (mx + 12) + 'px').style('top', (my + 12) + 'px');
+  .on('mousemove', function(event) {
+    tooltip
+      .style('left', (event.pageX + 12) + 'px')
+      .style('top', (event.pageY - 28) + 'px');
   })
   .on('mouseout', function(event, d) {
-    // revert and hide tooltip
-    d3.select(this).transition().duration(200).attr('d', arc).attr('fill', d.data.color);
-    tooltip.classed('visible', false);
+    d3.select(this)
+      .transition()
+      .duration(200)
+      .attr('d', arc)
+      .attr('fill', d.data.color);
+      
+    tooltip.style('opacity', 0);
   });
 
-// Add legend
-const legend = d3.select('.rounded-box')
-  .append('div')
-  .attr('class', 'pie-legend')
-  .style('margin-top', '16px');
-
-pieData.forEach(d => {
-  const item = legend.append('div')
-    .style('display', 'flex')
-    .style('align-items', 'center')
-    .style('margin-bottom', '6px')
-    .style('color', '#fff')
-    .style('font-weight', '600');
-  item.append('span')
-    .style('display', 'inline-block')
-    .style('width', '18px')
-    .style('height', '18px')
-    .style('background', d.color)
-    .style('border-radius', '4px')
-    .style('margin-right', '10px');
-  item.append('span').text(d.label + ' — ' + d.value + '%');
-});
-
-// Add center text group (empty by default)
-// create tooltip element appended to body; will be positioned on mousemove
-const tooltip = d3.select('body').append('div').attr('class', 'pie-tooltip');
+// Add percentage labels
+svg.selectAll('text')
+  .data(pie(pieData))
+  .enter()
+  .append('text')
+  .attr('transform', d => {
+    const centroid = arc.centroid(d);
+    const x = centroid[0] * 1.4;
+    const y = centroid[1] * 1.4;
+    return `translate(${x},${y})`;
+  })
+  .attr('text-anchor', 'middle')
+  .attr('dy', '.35em')
+  .style('font-size', '12px')
+  .style('fill', '#fff')
+  .text(d => `${d.data.value}%`);
 
 })();

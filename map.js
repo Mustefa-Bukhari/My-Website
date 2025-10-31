@@ -16,7 +16,7 @@
   const aliases = {
     'United States': ['United States', 'United States of America', 'USA', 'US'],
     'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK'],
-    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR'],
+    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],  // Added China for Hong Kong detection
     'Germany': ['Germany', 'Federal Republic of Germany', 'Deutschland'],
     'Italy': ['Italy', 'Italia', 'Italian Republic'],
     'Iceland': ['Iceland', 'Republic of Iceland'],
@@ -27,6 +27,11 @@
   function findName(propName) {
     if (!propName) return null;
     propName = propName.trim();
+    
+    // Special case for Hong Kong within China
+    if (propName === 'China' && counts['Hong Kong']) {
+      return 'Hong Kong';
+    }
     
     // direct match
     if (counts[propName]) return propName;
@@ -68,10 +73,10 @@
     // Debug: Log features count
     console.log('Features loaded:', world.features.length);
 
-    // Setup projection fitted to container
+    // Setup projection fitted to container with padding
     const projection = d3.geoMercator()
-      .scale(140)
-      .center([0, 20])
+      .scale(130)
+      .center([0, 35])
       .translate([width / 2, height / 2]);
     
     const path = d3.geoPath().projection(projection);
@@ -82,16 +87,19 @@
       .range(['#aeeaf6', '#00d8b3']);
 
     // Setup tooltip
-    let tooltip = d3.select('.pie-tooltip');
+    let tooltip = d3.select('.map-tooltip');
     if (tooltip.empty()) {
       tooltip = d3.select('body').append('div')
-        .attr('class', 'pie-tooltip')
+        .attr('class', 'map-tooltip')
         .style('position', 'absolute')
-        .style('background', '#fff')
-        .style('padding', '5px')
-        .style('border-radius', '5px')
+        .style('background', 'rgba(255, 255, 255, 0.9)')
+        .style('padding', '8px 12px')
+        .style('border-radius', '4px')
+        .style('font-size', '14px')
         .style('pointer-events', 'none')
-        .style('opacity', 0);
+        .style('opacity', 0)
+        .style('box-shadow', '0 2px 4px rgba(0,0,0,0.1)')
+        .style('z-index', 1000);
     }
 
     // Draw base layer with all countries in light blue
@@ -124,7 +132,7 @@
         if (!name) return;
         
         const count = counts[name];
-        tooltip.html(`<strong>${d.properties.name}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
+        tooltip.html(`<strong>${name}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
           .style('opacity', 1)
           .style('left', (event.pageX + 12) + 'px')
           .style('top', (event.pageY - 28) + 'px');
@@ -132,8 +140,8 @@
         d3.select(this)
           .transition()
           .duration(200)
-          .attr('fill', d => {
-            const base = d3.color(colorScale(counts[name]));
+          .attr('fill', () => {
+            const base = d3.color(colorScale(count));
             return d3.hsl(base).brighter(0.2);
           });
       })
@@ -152,6 +160,47 @@
           .transition()
           .duration(200)
           .attr('fill', colorScale(counts[name]));
+      });
+
+    // Draw point for Hong Kong (since it's too small to see on the map)
+    const hkCoords = [114.1095, 22.3964]; // Hong Kong coordinates
+    
+    svg.append('circle')
+      .attr('cx', projection(hkCoords)[0])
+      .attr('cy', projection(hkCoords)[1])
+      .attr('r', 4)
+      .attr('fill', colorScale(counts['Hong Kong']))
+      .attr('stroke', '#062a25')
+      .attr('stroke-width', 1)
+      .style('cursor', 'pointer')
+      .on('mouseover', function(event) {
+        tooltip.html(`<strong>Hong Kong</strong><br>${counts['Hong Kong']} screenings`)
+          .style('opacity', 1)
+          .style('left', (event.pageX + 12) + 'px')
+          .style('top', (event.pageY - 28) + 'px');
+        
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('r', 6)
+          .attr('fill', () => {
+            const base = d3.color(colorScale(counts['Hong Kong']));
+            return d3.hsl(base).brighter(0.2);
+          });
+      })
+      .on('mousemove', function(event) {
+        tooltip
+          .style('left', (event.pageX + 12) + 'px')
+          .style('top', (event.pageY - 28) + 'px');
+      })
+      .on('mouseout', function() {
+        tooltip.style('opacity', 0);
+        
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('r', 4)
+          .attr('fill', colorScale(counts['Hong Kong']));
       });
 
     // Create legend
