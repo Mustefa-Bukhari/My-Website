@@ -66,9 +66,9 @@
       <a href="portfolio.html"><button class="gradient-btn">Portfolio</button></a>
     </div>
   </div>
-  <div class="rounded-box">
-    <canvas id="workPieChart" width="400" height="400"></canvas>
-  </div>
+
+  <div class="rounded-box"></div>
+
   <script>
     document.querySelectorAll('.gradient-btn').forEach(btn => {
       btn.addEventListener('mousemove', function(e) {
@@ -83,6 +83,8 @@
       });
     });
   </script>
-    <script src="code.js"></script>
+  <script src="code.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="d3pie.js"></script>
   </body>
 </html>
