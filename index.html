@@ -161,7 +161,7 @@
   <!-- load D3 + pie script -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script src="d3pie.js"></script>
-  <!-- Using a provided PNG for the map instead of the GeoJSON choropleth. Place your PNG named `world-map.png` in the project root. -->
+  <script src="choropleth.js"></script>
 
   <script>
     // Button gradient interaction
@@ -177,134 +177,6 @@
         btn.style.background = 'linear-gradient(135deg, #007bff, #ffffff)';
       });
     });
-  </script>
-
-  <!-- Map from provided PNG: overlay markers and legend -->
-  <script>
-    // Ensure the image file 'world-map.png' is placed in the project root.
-    (function(){
-      const counts = {
-        'United States': 2,
-        'Italy': 1,
-        'Iceland': 1,
-        'Hong Kong': 2,
-        'Germany': 3,
-        'United Kingdom': 3,
-        'Mexico': 1,
-        'Pakistan': 1
-      };
-
-      // approximate marker positions (percentages) over the provided PNG
-      const positions = {
-        'United States': {x: 18, y: 42},
-        'Italy': {x: 57, y: 46},
-        'Iceland': {x: 46, y: 22},
-        'Hong Kong': {x: 88, y: 51},
-        'Germany': {x: 59, y: 42},
-        'United Kingdom': {x: 52, y: 36},
-        'Mexico': {x: 18, y: 64},
-        'Pakistan': {x: 78, y: 40}
-      };
-
-      const max = Math.max(...Object.values(counts));
-      const colorScale = d3.scaleLinear().domain([1, max]).range(["#aeeaf6","#00d8b3"]);
-
-      const container = document.getElementById('map-container');
-      // clear any previous content
-      container.innerHTML = '';
-
-      // image
-      const img = document.createElement('img');
-      img.src = 'world-map.png';
-      img.alt = 'World map';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.display = 'block';
-      img.style.objectFit = 'cover';
-      img.style.position = 'absolute';
-      img.style.left = '0';
-      img.style.top = '0';
-      container.appendChild(img);
-
-      // overlay
-      const overlay = document.createElement('div');
-      overlay.style.position = 'absolute';
-      overlay.style.left = '0';
-      overlay.style.top = '0';
-      overlay.style.width = '100%';
-      overlay.style.height = '100%';
-      overlay.style.pointerEvents = 'none';
-      container.appendChild(overlay);
-
-      // tooltip reuse: create if none
-      let mapTooltip = document.querySelector('.pie-tooltip');
-      if (!mapTooltip) {
-        mapTooltip = document.createElement('div');
-        mapTooltip.className = 'pie-tooltip';
-        document.body.appendChild(mapTooltip);
-      }
-
-      Object.keys(positions).forEach(name => {
-        const pos = positions[name];
-        const count = counts[name] || 0;
-        const el = document.createElement('div');
-        el.className = 'map-marker';
-        el.style.position = 'absolute';
-        el.style.left = pos.x + '%';
-        el.style.top = pos.y + '%';
-        el.style.transform = 'translate(-50%,-50%)';
-        el.style.width = '16px';
-        el.style.height = '16px';
-        el.style.borderRadius = '50%';
-        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
-        el.style.pointerEvents = 'auto';
-        el.style.cursor = 'pointer';
-        el.style.border = '2px solid rgba(255,255,255,0.6)';
-        el.style.background = count ? colorScale(count) : 'rgba(173,216,230,0.05)';
-
-        // tooltip behavior
-        el.addEventListener('mouseover', (ev) => {
-          mapTooltip.innerHTML = `<strong>${name}</strong><br>${count} screening${count===1?'':'s'}`;
-          mapTooltip.classList.add('visible');
-          mapTooltip.style.left = (ev.pageX + 12) + 'px';
-          mapTooltip.style.top = (ev.pageY + 12) + 'px';
-        });
-        el.addEventListener('mousemove', (ev) => {
-          mapTooltip.style.left = (ev.pageX + 12) + 'px';
-          mapTooltip.style.top = (ev.pageY + 12) + 'px';
-        });
-        el.addEventListener('mouseout', () => {
-          mapTooltip.classList.remove('visible');
-        });
-
-        overlay.appendChild(el);
-      });
-
-      // legend: recreate and describe counts
-      const legend = document.getElementById('map-legend');
-      legend.innerHTML = '';
-      const keys = Object.keys(counts).map(k => ({k, v: counts[k]})).sort((a,b)=>b.v-a.v);
-      keys.forEach(entry => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.gap = '8px';
-        row.style.marginBottom = '6px';
-        const sw = document.createElement('span');
-        sw.style.display = 'inline-block';
-        sw.style.width = '14px';
-        sw.style.height = '14px';
-        sw.style.borderRadius = '4px';
-        sw.style.background = entry.v ? colorScale(entry.v) : 'rgba(173,216,230,0.05)';
-        row.appendChild(sw);
-        const label = document.createElement('span');
-        label.textContent = `${entry.k} — ${entry.v}`;
-        label.style.color = '#fff';
-        row.appendChild(label);
-        legend.appendChild(row);
-      });
-
-    })();
   </script>
 
   <script src="code.js"></script>
