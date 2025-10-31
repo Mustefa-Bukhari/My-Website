@@ -143,7 +143,13 @@ h1 {
 /* Ensure the large pie background doesn't cover the map */
 .pie-bg {
   pointer-events: none;
-  z-index: -10; /* push it further back so later sections (map) appear above it */
+  z-index: -1000; /* push it well behind everything so the map and other sections appear above it */
+}
+
+/* Temporary: hide the oversized pie background to ensure the map is visible.
+   If you prefer the decorative background, we can reduce its size or clip it instead. */
+.pie-bg {
+  display: none;
 }
 
 /* Make sure the map section and container sit above the pie background */

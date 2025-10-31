@@ -1,5 +1,6 @@
 // d3pie.js - Pie chart using D3.js
 
+(function(){
 // Data for areas worked in
 const pieData = [
   {label: 'Motion Graphics', value: 30, color: '#007bff'},
@@ -95,3 +96,5 @@ pieData.forEach(d => {
 // Add center text group (empty by default)
 // create tooltip element appended to body; will be positioned on mousemove
 const tooltip = d3.select('body').append('div').attr('class', 'pie-tooltip');
+
+})();
