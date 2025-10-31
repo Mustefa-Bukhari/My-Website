@@ -196,22 +196,35 @@
 
       // Normalize some alternate country names to match GeoJSON properties
       const aliases = {
-        'United States': ['United States','United States of America','USA'],
-        'United Kingdom': ['United Kingdom','United Kingdom of Great Britain and Northern Ireland','UK'],
-        'Hong Kong': ['Hong Kong']
+        'United States': ['United States', 'United States of America', 'USA', 'US'],
+        'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK'],
+        'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR'],
+        'Germany': ['Germany', 'Federal Republic of Germany', 'Deutschland'],
+        'Italy': ['Italy', 'Italia', 'Italian Republic'],
+        'Iceland': ['Iceland', 'Republic of Iceland'],
+        'Mexico': ['Mexico', 'United Mexican States', 'México'],
+        'Pakistan': ['Pakistan', 'Islamic Republic of Pakistan']
       };
 
       function findName(propName) {
         if (!propName) return null;
+        propName = propName.trim();
+        
         // direct match
-        for (const k of Object.keys(counts)) {
-          if (propName === k) return k;
-          const a = aliases[k];
-          if (a && a.indexOf(propName) >= 0) return k;
+        if (counts[propName]) return propName;
+        
+        // check aliases
+        for (const [country, altNames] of Object.entries(aliases)) {
+          if (altNames.some(name => name.toLowerCase() === propName.toLowerCase())) {
+            return country;
+          }
         }
-        // fallback: try a simple substring match for common cases
-        for (const k of Object.keys(counts)) {
-          if (propName.includes(k.split(' ')[0])) return k;
+        
+        // more flexible matching as fallback
+        for (const [country, altNames] of Object.entries(aliases)) {
+          if (altNames.some(name => propName.toLowerCase().includes(name.toLowerCase()))) {
+            return country;
+          }
         }
         return null;
       }
@@ -254,13 +267,10 @@
         .attr('fill', d => {
           const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
           const key = findName(name);
-          return key ? colorScale(counts[key]) : 'rgba(173,216,230,0.05)'; // 5% light blue for no screenings
+          // Use actual rgba for better fill visibility on non-screening countries
+          return key ? colorScale(counts[key]) : 'rgba(174, 234, 246, 0.05)';
         })
-        .attr('fill-opacity', d => {
-          const name = d.properties.name || d.properties.ADMIN || d.properties.admin;
-          const key = findName(name);
-          return key ? 0.9 : 1; // 90% opacity for countries with screenings
-        })
+        .attr('fill-opacity', 1) // use full opacity for all countries
         .attr('stroke', '#062a25')
         .attr('stroke-width', 0.6)
         .on('mouseover', function(event,d){
