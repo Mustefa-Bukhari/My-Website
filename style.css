@@ -139,3 +139,19 @@ h1 {
   justify-items: center;
   margin: 40px 0;
 }
+
+/* Ensure the large pie background doesn't cover the map */
+.pie-bg {
+  pointer-events: none;
+  z-index: -10; /* push it further back so later sections (map) appear above it */
+}
+
+/* Make sure the map section and container sit above the pie background */
+#map-section {
+  position: relative;
+  z-index: 20;
+}
+#map-container {
+  position: relative;
+  z-index: 21;
+}
