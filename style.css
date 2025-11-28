@@ -203,7 +203,7 @@ html, body {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 40px 60px;
+  gap: 40px 25px;
   padding: 30px 20px;
   justify-content: center;
   align-items: flex-start;
