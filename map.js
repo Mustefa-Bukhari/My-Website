@@ -46,26 +46,21 @@
   }
 
   // Set dimensions with space for legend
-  const width = 800;  // Reduced width
-  const height = 400; // Proportional height
-  const margin = { top: 20, right: 20, bottom: 20, left: 160 }; // Increased left margin for legend
+  const containerWidth = 1000;
+  const containerHeight = 500;
+  const margin = { top: 10, right: 10, bottom: 10, left: 180 };
+  const width = containerWidth - margin.left - margin.right;
+  const height = containerHeight - margin.top - margin.bottom;
 
   // Clear and setup container
   const container = d3.select('#map-container');
   container.html('');
 
-  // Create background rounded rectangle
-  container.style('background', 'rgba(255, 255, 255, 0.1)')
-          .style('border-radius', '22px')
-          .style('padding', '20px')
-          .style('box-shadow', '0 8px 32px rgba(0,0,0,0.1)')
-          .style('border', '1px solid rgba(255,255,255,0.1)');
-
   // Create SVG with responsive sizing
   const svg = container.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+    .attr('viewBox', `0 0 ${containerWidth} ${containerHeight}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
     .style('display', 'block');
 
@@ -95,9 +90,10 @@
     const mapGroup = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Setup projection fitted to container with more optimal parameters
+    // Setup projection fitted to container
     const projection = d3.geoEquirectangular()
-      .fitSize([width - margin.left - margin.right, height], world);
+      .fitSize([width, height], world)
+      .translate([width / 2, height / 2]);
     
     const path = d3.geoPath().projection(projection);
 
