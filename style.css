@@ -358,3 +358,66 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Additional utility classes for other pages */
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.1);
+  max-width: 800px;
+  width: 100%;
+}
+
+.container h1,
+.container h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.container p {
+  color: #fff;
+  line-height: 1.6;
+}
+
+/* Video container styles */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  padding-bottom: 56.25%;
+  height: 0;
+  margin: 20px auto;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Table container for better styling */
+.table-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  overflow-x: auto;
+}
