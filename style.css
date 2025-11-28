@@ -518,7 +518,7 @@ html, body {
 .video-container {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   padding-bottom: 56.25%;
   height: 0;
   margin: 20px auto;
