@@ -70,12 +70,26 @@
     .style('display', 'block');
 
   try {
-    // Load GeoJSON data
-    const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    // Try to load local GeoJSON first, fallback to remote
+    let world;
+    try {
+      const localResponse = await fetch('world_detailed.geojson');
+      if (localResponse.ok) {
+        world = await localResponse.json();
+        console.log('Loaded local GeoJSON data');
+      } else {
+        throw new Error('Local file not available');
+      }
+    } catch (localError) {
+      console.log('Loading remote GeoJSON data...');
+      const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      world = await response.json();
     }
-    const world = await response.json();
+    
+    console.log('Features loaded:', world.features.length);
     
     // Create main group for map with margin
     const mapGroup = svg.append('g')
