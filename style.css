@@ -534,6 +534,21 @@ html, body {
   border-radius: 8px;
 }
 
+/* Video grid for portfolio */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.video-grid .video-container {
+  max-width: none;
+  margin: 0;
+}
+
 /* Table container for better styling */
 .table-wrapper {
   width: 100%;
