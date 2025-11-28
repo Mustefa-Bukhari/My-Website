@@ -95,6 +95,23 @@
     const flagCircle = document.createElement('div');
     flagCircle.className = 'flag-circle';
     flagCircle.textContent = data.flag;
+    flagCircle.style.cursor = 'pointer';
+    
+    // Flag tooltip handlers
+    flagCircle.addEventListener('mouseenter', (e) => {
+      tooltip.textContent = country;
+      tooltip.style.opacity = '1';
+    });
+
+    flagCircle.addEventListener('mousemove', (e) => {
+      tooltip.style.left = (e.pageX + 12) + 'px';
+      tooltip.style.top = (e.pageY - 28) + 'px';
+    });
+
+    flagCircle.addEventListener('mouseleave', () => {
+      tooltip.style.opacity = '0';
+    });
+    
     group.appendChild(flagCircle);
 
     // Location circles container
