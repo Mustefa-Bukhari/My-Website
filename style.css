@@ -79,11 +79,12 @@ html, body {
 }
 
 .mithi-logo {
-  height: clamp(60px, 8vw, 120px);
+  height: clamp(2rem, 5vw, 2.5rem);
   width: auto;
   max-width: 100%;
   object-fit: contain;
   margin: 0;
+  filter: brightness(0) invert(1);
 }
 
 .button-grid {
