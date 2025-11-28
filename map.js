@@ -125,7 +125,7 @@
         const name = findName(d.properties.name);
         return name ? colorScale(counts[name]) : 'rgba(173,216,230,0.2)';
       })
-      .attr('stroke', '#ffffff')
+      .attr('stroke', '#1a3a52')
       .attr('stroke-width', 0.5)
       .style('cursor', d => findName(d.properties.name) ? 'pointer' : 'default')
       .each(function(d) {
