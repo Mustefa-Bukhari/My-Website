@@ -149,10 +149,14 @@
           .style('left', (event.pageX + 12) + 'px')
           .style('top', (event.pageY - 28) + 'px');
         
+        // Calculate centroid for transform origin
+        const centroid = path.centroid(d);
+        
         d3.select(this)
           .transition()
           .duration(200)
-          .attr('transform', 'scale(1.05)')
+          .style('transform-origin', `${centroid[0]}px ${centroid[1]}px`)
+          .style('transform', 'scale(1.05)')
           .attr('fill', () => {
             const base = d3.color(colorScale(count));
             return d3.hsl(base).brighter(0.2);
@@ -172,7 +176,7 @@
         d3.select(this)
           .transition()
           .duration(200)
-          .attr('transform', 'scale(1)')
+          .style('transform', 'scale(1)')
           .attr('fill', colorScale(counts[name]));
       });
 
