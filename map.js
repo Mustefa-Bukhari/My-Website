@@ -144,8 +144,7 @@
         if (!name) return;
         
         const count = counts[name];
-        const displayName = (name === 'Hong Kong' && d.properties.name === 'China') ? 'China (for Hong Kong)' : name;
-        tooltip.html(`<strong>${displayName}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
+        tooltip.html(`<strong>${name}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
           .style('opacity', 1)
           .style('left', (event.pageX + 12) + 'px')
           .style('top', (event.pageY - 28) + 'px');
@@ -153,6 +152,7 @@
         d3.select(this)
           .transition()
           .duration(200)
+          .attr('transform', 'scale(1.05)')
           .attr('fill', () => {
             const base = d3.color(colorScale(count));
             return d3.hsl(base).brighter(0.2);
@@ -172,6 +172,7 @@
         d3.select(this)
           .transition()
           .duration(200)
+          .attr('transform', 'scale(1)')
           .attr('fill', colorScale(counts[name]));
       });
 
@@ -181,10 +182,10 @@
     mapGroup.append('circle')
       .attr('cx', projection(hkCoords)[0])
       .attr('cy', projection(hkCoords)[1])
-      .attr('r', 4)
+      .attr('r', 6)
       .attr('fill', colorScale(counts['Hong Kong']))
       .attr('stroke', '#062a25')
-      .attr('stroke-width', 1)
+      .attr('stroke-width', 1.5)
       .style('cursor', 'pointer')
       .on('mouseover', function(event) {
         tooltip.html(`<strong>Hong Kong</strong><br>${counts['Hong Kong']} screenings`)
@@ -195,7 +196,7 @@
         d3.select(this)
           .transition()
           .duration(200)
-          .attr('r', 6)
+          .attr('r', 9)
           .attr('fill', () => {
             const base = d3.color(colorScale(counts['Hong Kong']));
             return d3.hsl(base).brighter(0.2);
@@ -212,7 +213,7 @@
         d3.select(this)
           .transition()
           .duration(200)
-          .attr('r', 4)
+          .attr('r', 6)
           .attr('fill', colorScale(counts['Hong Kong']));
       });
 
