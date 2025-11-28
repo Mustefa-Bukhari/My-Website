@@ -337,8 +337,7 @@ html, body {
   margin: 20px 0;
   font-size: 1em;
   min-width: 300px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -346,22 +345,22 @@ html, body {
 .responsive-table th,
 .responsive-table td {
   padding: 12px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #fff;
   text-align: left;
 }
 
 .responsive-table th {
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: transparent;
+  color: #fff;
   font-weight: 700;
 }
 
 .responsive-table td {
-  color: #333;
+  color: #fff;
 }
 
 .responsive-table tbody tr:hover {
-  background-color: #e0f7fa;
+  background-color: rgba(255, 255, 255, 0.1);
   transition: background 0.2s;
 }
 
