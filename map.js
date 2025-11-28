@@ -16,7 +16,7 @@
   const aliases = {
     'United States': ['United States', 'United States of America', 'USA', 'US', 'United States of America'],
     'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK', 'Britain'],
-    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR'],
+    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],  // Include China for highlighting
     'Germany': ['Germany', 'Federal Republic of Germany', 'Deutschland'],
     'Italy': ['Italy', 'Italia', 'Italian Republic'],
     'Iceland': ['Iceland', 'Republic of Iceland'],
@@ -43,9 +43,9 @@
   }
 
   // Set dimensions with space for legend
-  const containerWidth = 1000;
-  const containerHeight = 500;
-  const margin = { top: 10, right: 10, bottom: 10, left: 180 };
+  const containerWidth = 1200;
+  const containerHeight = 600;
+  const margin = { top: 10, right: 10, bottom: 10, left: 200 };
   const width = containerWidth - margin.left - margin.right;
   const height = containerHeight - margin.top - margin.bottom;
 
@@ -72,13 +72,22 @@
     
     console.log('Features loaded:', world.features.length);
     
+    // Filter out Antarctica and focus on main continents
+    world.features = world.features.filter(d => 
+      d.properties.name !== 'Antarctica' && 
+      d.properties.name !== 'Fr. S. Antarctic Lands'
+    );
+    
+    console.log('Features after filtering:', world.features.length);
+    
     // Create main group for map with margin
     const mapGroup = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Setup projection fitted to container
+    // Setup projection fitted to container (focused on main landmasses)
     const projection = d3.geoEquirectangular()
-      .fitSize([width, height], world)
+      .fitExtent([[0, 0], [width, height]], world)
+      .center([0, 30])  // Center slightly north of equator
       .translate([width / 2, height / 2]);
     
     const path = d3.geoPath().projection(projection);
@@ -135,7 +144,8 @@
         if (!name) return;
         
         const count = counts[name];
-        tooltip.html(`<strong>${name}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
+        const displayName = (name === 'Hong Kong' && d.properties.name === 'China') ? 'China (for Hong Kong)' : name;
+        tooltip.html(`<strong>${displayName}</strong><br>${count} screening${count === 1 ? '' : 's'}`)
           .style('opacity', 1)
           .style('left', (event.pageX + 12) + 'px')
           .style('top', (event.pageY - 28) + 'px');
