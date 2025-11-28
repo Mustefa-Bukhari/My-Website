@@ -128,11 +128,7 @@
       .attr('stroke-width', 0.5)
       .style('cursor', d => findName(d.properties.name) ? 'pointer' : 'default')
       .style('transform-box', 'fill-box')
-      .each(function(d) {
-        // Set transform origin on initialization to prevent jump
-        const centroid = path.centroid(d);
-        d3.select(this).style('transform-origin', `${centroid[0]}px ${centroid[1]}px`);
-      })
+      .style('transform-origin', 'center center')
       .on('mouseover', function(event, d) {
         const name = findName(d.properties.name);
         if (!name) return;
@@ -142,6 +138,9 @@
           .style('opacity', 1)
           .style('left', (event.pageX + 12) + 'px')
           .style('top', (event.pageY - 28) + 'px');
+        
+        // Bring to front
+        this.parentNode.appendChild(this);
         
         d3.select(this)
           .classed('country-hovered', true)
