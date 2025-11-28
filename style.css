@@ -159,6 +159,36 @@ html, body {
   overflow: visible !important;
 }
 
+/* Showreel Section */
+.showreel-section {
+  grid-row: 2;
+  display: grid;
+  place-items: center;
+  position: relative;
+  padding: 40px 20px;
+  z-index: 8;
+}
+
+.showreel-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 30px 20px;
+  max-width: 100%;
+}
+
+.showreel-link {
+  text-decoration: none;
+}
+
+.showreel-btn {
+  padding: 16px 32px;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  min-width: 200px;
+}
+
 /* Map Section */
 .map-section {
   grid-row: 3;
