@@ -90,7 +90,7 @@ html, body {
 
 .gradient-btn {
   width: 100%;
-  background: linear-gradient(135deg, #87CEEB, #ffffff);
+  background: linear-gradient(135deg, #007bff, #ffffff);
   color: #fff;
   border: none;
   padding: 12px 20px;
@@ -103,7 +103,7 @@ html, body {
 }
 
 .gradient-btn:hover {
-  color: #87CEEB;
+  color: #007bff;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
