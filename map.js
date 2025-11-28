@@ -125,7 +125,8 @@
         const name = findName(d.properties.name);
         return name ? colorScale(counts[name]) : 'rgba(173,216,230,0.2)';
       })
-      .attr('stroke', 'none')
+      .attr('stroke', '#ffffff')
+      .attr('stroke-width', 0.5)
       .style('cursor', d => findName(d.properties.name) ? 'pointer' : 'default')
       .each(function(d) {
         // Set transform origin on initialization to prevent jump
@@ -143,11 +144,10 @@
           .style('top', (event.pageY - 28) + 'px');
         
         d3.select(this)
+          .classed('country-hovered', true)
           .transition()
           .duration(200)
           .style('transform', 'scale(1.05)')
-          .attr('stroke', '#ffffff')
-          .attr('stroke-width', 2)
           .attr('fill', () => {
             const base = d3.color(colorScale(count));
             return d3.hsl(base).brighter(0.2);
@@ -165,10 +165,10 @@
         tooltip.style('opacity', 0);
         
         d3.select(this)
+          .classed('country-hovered', false)
           .transition()
           .duration(200)
           .style('transform', 'scale(1)')
-          .attr('stroke', 'none')
           .attr('fill', colorScale(counts[name]));
       });
 

@@ -421,3 +421,19 @@ html, body {
   margin: 20px auto;
   overflow-x: auto;
 }
+
+/* Animated stroke for hovered map countries */
+@keyframes pulseStroke {
+  0%, 100% {
+    stroke: #00d8b3;
+    stroke-width: 2;
+  }
+  50% {
+    stroke: #0099cc;
+    stroke-width: 2.5;
+  }
+}
+
+.country-hovered {
+  animation: pulseStroke 1.5s ease-in-out infinite;
+}
