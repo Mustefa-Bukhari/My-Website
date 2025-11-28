@@ -191,18 +191,20 @@ html, body {
 
 #cartogram-container {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 30px;
-  padding: 20px;
-  justify-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 60px;
+  padding: 30px 20px;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .country-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  min-width: 80px;
 }
 
 .flag-circle {
@@ -221,13 +223,13 @@ html, body {
 .location-circles {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
 .location-circle {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -247,7 +249,7 @@ html, body {
 .location-circle:hover {
   background: rgba(0, 216, 179, 0.3);
   border-color: #00d8b3;
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .map-content {
