@@ -5,6 +5,7 @@
   <title>Award List</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
   <!-- Main Grid Container -->
@@ -14,7 +15,12 @@
     <section class="hero-section">
       <div class="hero-bg"></div>
       <div class="hero-content">
-        <h1 class="mithi-text">MITHI</h1>
+        <div id="logo-container" class="logo-container">
+          <svg id="static-logo" class="mithi-logo" viewBox="64.3411 36.108 275.366 244.269" xmlns="http://www.w3.org/2000/svg">
+            <path d="M172.275 207.821 L172.275 164.429 L190.995 164.429 L207.969 206.817 L224.943 164.429 L243.663 164.429 L243.663 207.821 L231.923 207.821 L231.923 177.337 L213.713 221.737 L202.225 221.737 L184.015 177.337 L184.015 207.821 L172.275 207.821 Z M265.677 207.821 L265.677 164.429 L277.417 164.429 L277.417 207.821 L265.677 207.821 Z M302.605 207.821 L302.605 175.333 L289.613 175.333 L289.613 164.429 L327.337 164.429 L327.337 175.333 L314.345 175.333 L314.345 207.821 L302.605 207.821 Z M367.477 164.429 L379.217 164.429 L379.217 207.821 L367.477 207.821 L367.477 191.833 L350.755 191.833 L350.755 207.821 L339.015 207.821 L339.015 164.429 L350.755 164.429 L350.755 180.829 L367.477 180.829 L367.477 164.429 Z M400.207 207.821 L400.207 164.429 L411.947 164.429 L411.947 207.821 L400.207 207.821 Z" fill="#ffffff"/>
+          </svg>
+          <div id="lottie-logo" class="lottie-logo" style="display: none;"></div>
+        </div>
         <div class="button-grid">
           <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
           <a href="about.html"><button class="gradient-btn">About</button></a>
@@ -63,6 +69,33 @@
   <script src="code.js"></script>
 
   <script>
+    // Logo Lottie Animation
+    let lottieAnimation = null;
+    const logoContainer = document.getElementById('logo-container');
+    const staticLogo = document.getElementById('static-logo');
+    const lottieContainer = document.getElementById('lottie-logo');
+    
+    // Load and setup Lottie animation
+    lottieAnimation = lottie.loadAnimation({
+      container: lottieContainer,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'animation.json'
+    });
+    
+    logoContainer.addEventListener('mouseenter', () => {
+      staticLogo.style.display = 'none';
+      lottieContainer.style.display = 'block';
+      lottieAnimation.play();
+    });
+    
+    logoContainer.addEventListener('mouseleave', () => {
+      lottieAnimation.stop();
+      lottieContainer.style.display = 'none';
+      staticLogo.style.display = 'block';
+    });
+
     // Button gradient interaction
     document.querySelectorAll('.gradient-btn').forEach(btn => {
       btn.addEventListener('mousemove', function(e) {
