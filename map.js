@@ -146,7 +146,7 @@
           .classed('country-hovered', true)
           .transition()
           .duration(200)
-          .style('transform', 'scale(1.05)')
+          .style('transform', 'scale(1.08)')
           .attr('fill', () => {
             const base = d3.color(colorScale(count));
             return d3.hsl(base).brighter(0.2);
@@ -179,8 +179,8 @@
       .attr('cy', projection(hkCoords)[1])
       .attr('r', 6)
       .attr('fill', colorScale(counts['Hong Kong']))
-      .attr('stroke', '#062a25')
-      .attr('stroke-width', 1.5)
+      .attr('stroke', '#1a3a52')
+      .attr('stroke-width', 0.8)
       .style('cursor', 'pointer')
       .on('mouseover', function(event) {
         tooltip.html(`<strong>Hong Kong</strong><br>${counts['Hong Kong']} screenings`)
@@ -212,9 +212,12 @@
           .attr('fill', colorScale(counts['Hong Kong']));
       });
 
-    // Create vertical legend on the left
+    // Create vertical legend on the left, centered vertically
+    const legendHeight = Object.keys(counts).length * 30;
+    const legendY = (containerHeight - legendHeight) / 2;
+    
     const legendGroup = svg.append('g')
-      .attr('transform', `translate(20,${margin.top})`);
+      .attr('transform', `translate(20, ${legendY})`);
     
     const entries = Object.entries(counts)
       .map(([k,v]) => ({k,v}))
