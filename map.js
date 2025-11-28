@@ -114,18 +114,7 @@
         .style('z-index', 1000);
     }
 
-    // Draw base layer with all countries in light blue
-    mapGroup.append('g')
-      .selectAll('path')
-      .data(world.features)
-      .enter()
-      .append('path')
-      .attr('d', path)
-      .attr('fill', 'rgba(173,216,230,0.2)')
-      .attr('stroke', '#062a25')
-      .attr('stroke-width', 0.6);
-
-    // Draw overlay with colored countries
+    // Draw single layer with all countries
     mapGroup.append('g')
       .selectAll('path')
       .data(world.features)
@@ -134,11 +123,15 @@
       .attr('d', path)
       .attr('fill', d => {
         const name = findName(d.properties.name);
-        return name ? colorScale(counts[name]) : 'transparent';
+        return name ? colorScale(counts[name]) : 'rgba(173,216,230,0.2)';
       })
-      .attr('stroke', '#062a25')
-      .attr('stroke-width', 0.6)
+      .attr('stroke', 'none')
       .style('cursor', d => findName(d.properties.name) ? 'pointer' : 'default')
+      .each(function(d) {
+        // Set transform origin on initialization to prevent jump
+        const centroid = path.centroid(d);
+        d3.select(this).style('transform-origin', `${centroid[0]}px ${centroid[1]}px`);
+      })
       .on('mouseover', function(event, d) {
         const name = findName(d.properties.name);
         if (!name) return;
@@ -149,14 +142,12 @@
           .style('left', (event.pageX + 12) + 'px')
           .style('top', (event.pageY - 28) + 'px');
         
-        // Calculate centroid for transform origin
-        const centroid = path.centroid(d);
-        
         d3.select(this)
           .transition()
           .duration(200)
-          .style('transform-origin', `${centroid[0]}px ${centroid[1]}px`)
           .style('transform', 'scale(1.05)')
+          .attr('stroke', '#ffffff')
+          .attr('stroke-width', 2)
           .attr('fill', () => {
             const base = d3.color(colorScale(count));
             return d3.hsl(base).brighter(0.2);
@@ -177,6 +168,7 @@
           .transition()
           .duration(200)
           .style('transform', 'scale(1)')
+          .attr('stroke', 'none')
           .attr('fill', colorScale(counts[name]));
       });
 
