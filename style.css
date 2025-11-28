@@ -78,6 +78,14 @@ html, body {
   margin: 0;
 }
 
+.mithi-logo {
+  height: clamp(60px, 8vw, 120px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin: 0;
+}
+
 .button-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
