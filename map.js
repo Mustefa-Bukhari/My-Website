@@ -4,8 +4,8 @@
   const counts = {
     'Germany': 3,
     'United Kingdom': 3,
+    'Hong Kong': 3,
     'United States': 2,
-    'Hong Kong': 2,
     'Italy': 1,
     'Iceland': 1,
     'Mexico': 1,
@@ -16,7 +16,7 @@
   const aliases = {
     'United States': ['United States', 'United States of America', 'USA', 'US', 'United States of America'],
     'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK', 'Britain'],
-    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],  // Include China for highlighting
+    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],
     'Germany': ['Germany', 'Federal Republic of Germany', 'Deutschland'],
     'Italy': ['Italy', 'Italia', 'Italian Republic'],
     'Iceland': ['Iceland', 'Republic of Iceland'],
@@ -84,10 +84,9 @@
     const mapGroup = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Setup projection fitted to container (focused on main landmasses)
-    const projection = d3.geoEquirectangular()
-      .fitExtent([[0, 0], [width, height]], world)
-      .center([0, 30])  // Center slightly north of equator
+    // Setup projection with better aspect ratio (less squishing)
+    const projection = d3.geoNaturalEarth1()
+      .fitSize([width, height], world)
       .translate([width / 2, height / 2]);
     
     const path = d3.geoPath().projection(projection);
@@ -128,6 +127,7 @@
       .attr('stroke', '#1a3a52')
       .attr('stroke-width', 0.5)
       .style('cursor', d => findName(d.properties.name) ? 'pointer' : 'default')
+      .style('transform-box', 'fill-box')
       .each(function(d) {
         // Set transform origin on initialization to prevent jump
         const centroid = path.centroid(d);
