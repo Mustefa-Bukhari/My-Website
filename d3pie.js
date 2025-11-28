@@ -112,33 +112,40 @@ svg.selectAll('text')
   .text(d => `${d.data.value}%`);
 
 // Add legend
-const legendSpacing = 20;
-const legendRectSize = 14;
+const legendRectSize = 16;
 
 const legend = d3.select('.rounded-box')
   .append('div')
+  .attr('class', 'pie-legend-container')
   .style('margin-top', '20px')
-  .style('display', 'flex')
-  .style('flex-wrap', 'wrap')
-  .style('justify-content', 'center')
-  .style('gap', '20px');
+  .style('display', 'grid')
+  .style('grid-template-columns', 'repeat(auto-fit, minmax(180px, 1fr))')
+  .style('gap', '12px')
+  .style('width', '100%')
+  .style('max-width', '800px')
+  .style('padding', '0 10px');
 
 pieData.forEach(data => {
   const legendItem = legend.append('div')
     .style('display', 'flex')
     .style('align-items', 'center')
-    .style('gap', '8px');
+    .style('gap', '10px')
+    .style('padding', '4px')
+    .style('white-space', 'nowrap');
 
   legendItem.append('span')
     .style('width', `${legendRectSize}px`)
     .style('height', `${legendRectSize}px`)
     .style('background-color', data.color)
-    .style('border-radius', '4px')
-    .style('display', 'inline-block');
+    .style('border-radius', '3px')
+    .style('display', 'inline-block')
+    .style('flex-shrink', '0');
 
   legendItem.append('span')
     .style('color', '#fff')
-    .style('font-size', '14px')
+    .style('font-size', '13px')
+    .style('font-weight', '500')
+    .style('overflow', 'visible')
     .text(`${data.label} (${data.value}%)`);
 });
 
