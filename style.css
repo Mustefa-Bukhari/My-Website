@@ -14,8 +14,9 @@ html {
 
 html, body {
   font-family: Arial, sans-serif;
-  min-height: 100vh;
+  height: 100vh;
   margin: 0;
+  padding: 0;
   background: linear-gradient(135deg, #007bff, #1de9b6);
   color: #fff;
   overflow-x: hidden;
@@ -29,7 +30,7 @@ html, body {
   gap: 60px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 20px 0;
   min-height: 100vh;
 }
 
@@ -45,18 +46,7 @@ html, body {
 }
 
 .hero-bg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(800px, 90vw);
-  height: 180px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(0,123,255,0.6), rgba(29,233,182,0.6));
-  backdrop-filter: blur(6px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.10);
-  border: 1px solid rgba(29,233,182,0.12);
-  z-index: 1;
+  display: none;
 }
 
 .hero-content {
@@ -100,7 +90,7 @@ html, body {
 
 .gradient-btn {
   width: 100%;
-  background: linear-gradient(135deg, #007bff, #ffffff);
+  background: linear-gradient(135deg, #87CEEB, #ffffff);
   color: #fff;
   border: none;
   padding: 12px 20px;
@@ -113,7 +103,7 @@ html, body {
 }
 
 .gradient-btn:hover {
-  color: #007bff;
+  color: #87CEEB;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
