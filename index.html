@@ -5,7 +5,6 @@
   <title>Award List</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
   <!-- Main Grid Container -->
@@ -15,30 +14,20 @@
     <section class="hero-section">
       <div class="hero-bg"></div>
       <div class="hero-content">
-        <div id="logo-container" class="logo-container">
-          <svg id="static-logo" class="mithi-logo" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-            <g fill="#ffffff">
-              <!-- M -->
-              <path d="M120 180 Q100 160 120 140 Q180 120 220 180 Q240 220 260 180 Q300 120 340 140 Q360 160 340 180 L340 380 Q340 400 320 400 L300 400 Q280 400 280 380 L280 280 L240 340 Q230 360 220 360 Q210 360 200 340 L160 280 L160 380 Q160 400 140 400 L120 400 Q100 400 100 380 L100 180 Z"/>
-              
-              <!-- i -->
-              <path d="M400 180 Q380 160 400 140 Q420 160 400 180 L400 200 Q380 180 400 160 Q440 160 460 200 L460 380 Q460 400 440 400 L420 400 Q400 400 400 380 L400 200 Z M400 100 Q380 80 400 60 Q420 80 400 100 Q420 120 400 140 Q380 120 400 100 Z"/>
-              
-              <!-- t -->
-              <path d="M500 160 L480 160 Q460 160 460 140 Q460 120 480 120 L500 120 L500 100 Q500 80 520 80 L540 80 Q560 80 560 100 L560 120 L580 120 Q600 120 600 140 Q600 160 580 160 L560 160 L560 360 Q560 380 580 380 Q600 380 600 400 Q600 420 580 420 L540 420 Q520 420 520 400 L520 160 L500 160 Z"/>
-              
-              <!-- h -->
-              <path d="M640 80 Q620 60 640 40 Q680 40 700 80 L700 240 Q720 220 740 220 Q780 220 800 260 L800 380 Q800 400 780 400 L760 400 Q740 400 740 380 L740 280 Q740 260 720 260 Q700 260 700 280 L700 380 Q700 400 680 400 L660 400 Q640 400 640 380 L640 80 Z"/>
-              
-              <!-- i -->
-              <path d="M840 180 Q820 160 840 140 Q860 160 840 180 L840 200 Q820 180 840 160 Q880 160 900 200 L900 380 Q900 400 880 400 L860 400 Q840 400 840 380 L840 200 Z M840 100 Q820 80 840 60 Q860 80 840 100 Q860 120 840 140 Q820 120 840 100 Z"/>
-              
-              <!-- Star decorations -->
-              <path d="M300 450 L310 470 L330 470 L315 485 L320 505 L300 490 L280 505 L285 485 L270 470 L290 470 Z"/>
-              <path d="M500 480 L520 520 L560 520 L530 550 L540 590 L500 570 L460 590 L470 550 L440 520 L480 520 Z"/>
-            </g>
+        <div class="logo-container">
+          <svg class="mithi-logo" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Mithi text -->
+            <path d="M150 200 Q120 150 160 120 Q200 100 220 140 Q240 180 200 200 Q180 220 150 200 Z" fill="white"/>
+            <path d="M250 180 L250 140 L270 140 L270 180 L250 180 Z" fill="white"/>
+            <path d="M290 200 L290 140 L310 140 Q340 140 340 160 Q340 180 310 180 L320 180 L320 200 L290 200 Z M310 160 L310 170 Q320 170 320 165 Q320 160 310 160 Z" fill="white"/>
+            <path d="M360 200 L360 140 L380 140 L380 170 L400 170 L400 140 L420 140 L420 200 L400 200 L400 185 L380 185 L380 200 L360 200 Z" fill="white"/>
+            <path d="M440 180 L440 140 L460 140 L460 180 L440 180 Z" fill="white"/>
+            <!-- Decorative stars -->
+            <path d="M300 320 Q280 300 300 280 Q320 300 300 320 Q280 340 300 360 Q320 340 300 320 Z" fill="white"/>
+            <path d="M500 400 Q480 380 500 360 Q520 380 500 400 Q480 420 500 440 Q520 420 500 400 Z" fill="white"/>
+            <!-- EDITS text -->
+            <text x="520" y="350" fill="white" font-family="Arial, sans-serif" font-size="48" font-weight="bold">EDITS</text>
           </svg>
-          <div id="lottie-logo" class="lottie-logo" style="display: none;"></div>
         </div>
         <div class="button-grid">
           <a href="accolades.html"><button class="gradient-btn">Accolades</button></a>
@@ -88,33 +77,6 @@
   <script src="code.js"></script>
 
   <script>
-    // Logo Lottie Animation
-    let lottieAnimation = null;
-    const logoContainer = document.getElementById('logo-container');
-    const staticLogo = document.getElementById('static-logo');
-    const lottieContainer = document.getElementById('lottie-logo');
-    
-    // Load and setup Lottie animation
-    lottieAnimation = lottie.loadAnimation({
-      container: lottieContainer,
-      renderer: 'svg',
-      loop: true,
-      autoplay: false,
-      path: 'animation.json'
-    });
-    
-    logoContainer.addEventListener('mouseenter', () => {
-      staticLogo.style.display = 'none';
-      lottieContainer.style.display = 'block';
-      lottieAnimation.play();
-    });
-    
-    logoContainer.addEventListener('mouseleave', () => {
-      lottieAnimation.stop();
-      lottieContainer.style.display = 'none';
-      staticLogo.style.display = 'block';
-    });
-
     // Button gradient interaction
     document.querySelectorAll('.gradient-btn').forEach(btn => {
       btn.addEventListener('mousemove', function(e) {
