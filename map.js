@@ -14,9 +14,9 @@
 
   // Normalize country names
   const aliases = {
-    'United States': ['United States', 'United States of America', 'USA', 'US'],
-    'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK'],
-    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR', 'China'],
+    'United States': ['United States', 'United States of America', 'USA', 'US', 'United States of America'],
+    'United Kingdom': ['United Kingdom', 'Great Britain', 'England', 'UK', 'Britain'],
+    'Hong Kong': ['Hong Kong', 'Hong Kong S.A.R.', 'Hong Kong SAR'],
     'Germany': ['Germany', 'Federal Republic of Germany', 'Deutschland'],
     'Italy': ['Italy', 'Italia', 'Italian Republic'],
     'Iceland': ['Iceland', 'Republic of Iceland'],
@@ -28,12 +28,7 @@
     if (!propName) return null;
     propName = propName.trim();
     
-    // Special case for Hong Kong within China
-    if (propName === 'China' && counts['Hong Kong']) {
-      return 'Hong Kong';
-    }
-    
-    // direct match
+    // direct match first
     if (counts[propName]) return propName;
     
     // check aliases
@@ -42,6 +37,8 @@
         return country;
       }
     }
+    
+    // Don't map China to Hong Kong - they are separate
     return null;
   }
 
@@ -65,24 +62,13 @@
     .style('display', 'block');
 
   try {
-    // Try to load local GeoJSON first, fallback to remote
-    let world;
-    try {
-      const localResponse = await fetch('world_detailed.geojson');
-      if (localResponse.ok) {
-        world = await localResponse.json();
-        console.log('Loaded local GeoJSON data');
-      } else {
-        throw new Error('Local file not available');
-      }
-    } catch (localError) {
-      console.log('Loading remote GeoJSON data...');
-      const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      world = await response.json();
+    // Load GeoJSON data from remote source (more accurate)
+    console.log('Loading world map data...');
+    const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+    if (!response.ok) {
+      throw new Error('Failed to load map data');
     }
+    const world = await response.json();
     
     console.log('Features loaded:', world.features.length);
     
